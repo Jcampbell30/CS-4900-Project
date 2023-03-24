@@ -1,3 +1,5 @@
+CREATE DATABASE peerReviewDatabase;
+
 CREATE TABLE user (
   userID INT NOT NULL AUTO_INCREMENT,
   userFirstName VARCHAR(50),
