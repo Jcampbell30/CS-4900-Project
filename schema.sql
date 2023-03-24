@@ -8,6 +8,7 @@ CREATE TABLE user (
   password VARCHAR(50),
   role VARCHAR(50),
   PRIMARY KEY (userID)
+  UNIQUE (email)
 );
 
 CREATE TABLE team (
