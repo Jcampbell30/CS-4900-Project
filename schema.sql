@@ -1,28 +1,41 @@
 CREATE TABLE user (
-  userid INT PRIMARY KEY,
+  userID INT NOT NULL AUTO_INCREMENT,
   userFirstName VARCHAR(50),
   userLastName VARCHAR(50),
   email VARCHAR(100),
   password VARCHAR(50),
-  role VARCHAR(50)
+  role VARCHAR(50),
+  PRIMARY KEY (userID)
 );
 
 CREATE TABLE team (
-  teamId INT PRIMARY KEY,
+  teamID INT NOT NULL AUTO_INCREMENT,
   teamName VARCHAR(50),
-  userid INT,
-  FOREIGN KEY (userid) REFERENCES user(userid)
+  userID INT,
+  FOREIGN KEY (userID) REFERENCES user(userID),
+  PRIMARY KEY (teamID)
 );
 
 CREATE TABLE rubric (
-  rubricID INT PRIMARY KEY,
+  rubricID INT NOT NULL AUTO_INCREMENT,
   path VARCHAR(255)
+  PRIMARY KEY (rubricID)
 );
 
 CREATE TABLE teamAssignment (
+  teamAssignmentID INT NOT NULL AUTO_INCREMENT,
   teamID INT,
   userID INT,
-  PRIMARY KEY (teamID, userID),
   FOREIGN KEY (teamID) REFERENCES team(teamID),
+  FOREIGN KEY (userID) REFERENCES user(userID),
+  PRIMARY KEY (teamAssignmentID)
+);
+
+CREATE TABLE rubricAssignment (
+  rubricAssignmentID INT NOT NULL AUTO_INCREMENT,
+  rubricID INT,
+  teamID INT,
+  FOREIGN KEY (rubricID) REFERENCES team(teamID),
   FOREIGN KEY (userID) REFERENCES user(userID)
+  PRIMARY KEY (rubricAssignmentID)
 );
