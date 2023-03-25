@@ -7,7 +7,7 @@ CREATE TABLE user (
   email VARCHAR(100),
   password VARCHAR(50),
   role VARCHAR(50),
-  PRIMARY KEY (userID)
+  PRIMARY KEY (userID),
   UNIQUE (email)
 );
 
