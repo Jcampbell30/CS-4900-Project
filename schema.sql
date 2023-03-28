@@ -1,4 +1,4 @@
-CREATE DATABASE peerReviewDatabase;
+CREATE DATABASE peer_db;
 
 CREATE TABLE user (
   userID INT NOT NULL AUTO_INCREMENT,
