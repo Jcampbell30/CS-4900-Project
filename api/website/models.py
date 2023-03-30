@@ -1,8 +1,9 @@
 from . import db
 from flask_login import UserMixin
 
-
-# Data tables
+###############
+# Data tables #
+###############
 class User(db.Model, UserMixin):
     __tablename__ = "user"
     userID = db.Column(db.Integer, primary_key=True)
@@ -26,7 +27,9 @@ class Question(db.Model):
     questionID = db.Column(db.Integer, primary_key=True)
     questionDesc = db.Column(db.String(250))
 
-#Relation table
+##################
+# Relation table #
+##################
 class TeamAssignment(db.Model):
     __tablename__ = "teamAssignment"
     teamAssignmentID = db.Column(db.Integer, primary_key=True)
