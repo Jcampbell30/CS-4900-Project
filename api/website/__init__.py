@@ -5,10 +5,16 @@ from os import path
 from flask_login import LoginManager
 import json
 
+db = SQLAlchemy()
+
 def create_app() -> Flask:
     app = Flask(__name__)
     app.secret_file = json.load(open((str(Path(__file__).parents[0]))+'/secrets/secrets.json'))
     app.config['SECRET_KEY'] = app.secret_file['secret_key']
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = str(app.secret_file['db_connection'])
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.init_app(app)
 
     from .views import views
     from .auth import auth
