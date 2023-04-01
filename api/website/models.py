@@ -4,8 +4,8 @@ from flask_login import UserMixin
 ###############
 # Data tables #
 ###############
-class User(db.Model, UserMixin):
-    __tablename__ = "user"
+class Users(db.Model, UserMixin):
+    __tablename__ = "users"
     userID = db.Column(db.Integer, primary_key=True)
     userFirstName = db.Column(db.String(50))
     userLastName = db.Column(db.String(50))

@@ -1,6 +1,6 @@
 CREATE DATABASE peer_db;
 
-CREATE TABLE user (
+CREATE TABLE users (
   userID INT NOT NULL AUTO_INCREMENT,
   userFirstName VARCHAR(50),
   userLastName VARCHAR(50),
@@ -14,7 +14,6 @@ CREATE TABLE user (
 CREATE TABLE team (
   teamID INT NOT NULL AUTO_INCREMENT,
   teamName VARCHAR(50),
-  FOREIGN KEY (userID) REFERENCES user(userID),
   PRIMARY KEY (teamID)
 );
 
@@ -34,7 +33,7 @@ CREATE TABLE teamAssignment (
   teamID INT,
   userID INT,
   FOREIGN KEY (teamID) REFERENCES team(teamID),
-  FOREIGN KEY (userID) REFERENCES user(userID),
+  FOREIGN KEY (userID) REFERENCES users(userID),
   PRIMARY KEY (teamAssignmentID)
 );
 
@@ -43,7 +42,6 @@ CREATE TABLE rubricAssignment (
   rubricID INT,
   teamID INT,
   FOREIGN KEY (rubricID) REFERENCES team(teamID),
-  FOREIGN KEY (userID) REFERENCES user(userID),
   PRIMARY KEY (rubricAssignmentID)
 );
 
