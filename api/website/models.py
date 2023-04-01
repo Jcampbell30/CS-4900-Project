@@ -11,6 +11,7 @@ class Users(db.Model, UserMixin):
     userLastName = db.Column(db.String(50))
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(150))
+    salt = db.Column(db.String(50))
     role = db.Column(db.String(50))
 
 class Team(db.Model):

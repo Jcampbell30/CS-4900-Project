@@ -6,6 +6,7 @@ CREATE TABLE users (
   userLastName VARCHAR(50),
   email VARCHAR(100),
   password VARCHAR(150),
+  salt VARCHAR(50),
   role VARCHAR(50),
   PRIMARY KEY (userID),
   UNIQUE (email)
