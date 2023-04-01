@@ -27,7 +27,7 @@ CREATE TABLE question (
   questionID INT NOT NULL AUTO_INCREMENT,
   questionDesc VARCHAR(250),
   PRIMARY KEY (questionID)
-)
+);
 
 CREATE TABLE teamAssignment (
   teamAssignmentID INT NOT NULL AUTO_INCREMENT,
@@ -43,7 +43,7 @@ CREATE TABLE rubricAssignment (
   rubricID INT,
   teamID INT,
   FOREIGN KEY (rubricID) REFERENCES team(teamID),
-  FOREIGN KEY (userID) REFERENCES user(userID)
+  FOREIGN KEY (userID) REFERENCES user(userID),
   PRIMARY KEY (rubricAssignmentID)
 );
 
