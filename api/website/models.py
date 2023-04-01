@@ -34,7 +34,7 @@ class TeamAssignment(db.Model):
     __tablename__ = "teamAssignment"
     teamAssignmentID = db.Column(db.Integer, primary_key=True)
     teamID = db.Column(db.Integer, db.ForeignKey('team.teamID'))
-    userID = db.Column(db.Integer, db.ForeignKey('user.userID'))
+    userID = db.Column(db.Integer, db.ForeignKey('users.userID'))
 
 class RubricAssignment(db.Model):
     __tablename__ = "rubricAssignment"
