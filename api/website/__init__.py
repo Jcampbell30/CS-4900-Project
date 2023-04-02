@@ -30,6 +30,6 @@ def create_app() -> Flask:
 
     @login_manager.user_loader
     def load_user(userID):
-        return User.query.get(int(userID))
+        return Users.query.get(int(userID))
 
     return app
