@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template
+from flask import request
 
 views = Blueprint("views", __name__)
 
@@ -8,6 +9,7 @@ def home():
 
 @views.route("/rubrics")
 def rubrics():
+
     return render_template("rubrics.html")
 
 @views.route("/assignments")
