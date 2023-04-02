@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Rubrics{% endblock %}
+{% block content %}
+ <body>
+     <form action="/action_page.php" method="post">
+    <link href="{{ url_for('static',filename='styles/field_style.css') }}" rel="stylesheet">
+    
+    <button type="submit" value="rubric">Create Rubric</button><br><br>
+    <button type="submit" value="Submit">Submit</button>
+
+    </form> 
+    
+    </body>
+{% endblock %}
