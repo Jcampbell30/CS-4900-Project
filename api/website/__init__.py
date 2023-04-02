@@ -22,7 +22,7 @@ def create_app() -> Flask:
     app.register_blueprint(views, url_prefix="/")
     app.register_blueprint(auth, url_prefix="/")
 
-    from .models import User, Team, Rubric, Question, TeamAssignment, RubricAssignment, QuestionAssignment
+    from .models import Users, Team, Rubric, Question, TeamAssignment, RubricAssignment, QuestionAssignment
 
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"
