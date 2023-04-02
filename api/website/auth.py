@@ -21,6 +21,8 @@ def sign_up():
         email_exists = Users.query.filter_by(email=email).first()
         if email_exists:
             flash('Email is already in use.', category='error')
+        elif check_email(email):
+            flash('Email is not a UTC email.', category='error')
         elif psw1 != psw2:
             flash('Passwords do not match.', category='error')
         elif len(psw1) <= 20:
