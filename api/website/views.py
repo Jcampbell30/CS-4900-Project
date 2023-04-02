@@ -7,11 +7,15 @@ views = Blueprint("views", __name__)
 def home():
     return render_template("home.html")
 
-@views.route("/rubrics")
+@views.route("/rubrics", methods=['GET', 'POST'])
 def rubrics():
 
     return render_template("rubrics.html")
 
-@views.route("/assignments")
+@views.route("/teams", methods=['GET', 'POST'])
+def teams():
+    return render_template("teams.html")
+
+@views.route("/assignments", methods=['GET', 'POST'])
 def assignments():
     return render_template("assignments.html")
