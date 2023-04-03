@@ -21,8 +21,8 @@ def sign_up():
         psw1 = request.form.get("psw")
         psw2 = request.form.get("psw-repeat")
 
-
         email_exists = Users.query.filter_by(email=email).first()
+        
         if email_exists:
             flash('Email is already in use.', category='error')
         elif not check_email(email):
