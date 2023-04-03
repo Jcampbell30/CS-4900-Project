@@ -83,6 +83,17 @@
     clear: both;
     display: table;
   }
+
+  /* Table Headings */
+  th {
+    background-color: yellow;
+  }
+
+  /* Table Data */
+  td {
+    background-color: grey;
+    font-weight: bold;
+  }
   
   /* Change styles for cancel button and signup button on extra small screens */
   @media screen and (max-width: 300px) {
