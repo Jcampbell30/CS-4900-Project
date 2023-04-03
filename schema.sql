@@ -23,6 +23,7 @@ CREATE TABLE team (
 CREATE TABLE rubric (
   rubricID INT NOT NULL AUTO_INCREMENT,
   rubricName VARCHAR(50),
+  rubricDate VARCHAR(50),
   teacherID INT,
   FOREIGN KEY (teacherID) REFERENCES users(userID),
   PRIMARY KEY (rubricID)
