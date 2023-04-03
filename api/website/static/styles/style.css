@@ -11,10 +11,19 @@
   h1 {
     color: gold;
     font-style: bold;
+    -webkit-text-stroke: 2px black;
+    text-shadow: 2px 2px black;
   }
   h2{
     color: gold;
+    background-color: navy;
   }
+
+  h3{
+    color: black;
+    background-color: gainsboro;
+  }
+
   label{
     color:gold;
   }
@@ -86,7 +95,7 @@
 
   /* Table Headings */
   th {
-    background-color: yellow;
+    background-color: #eab012;
   }
 
   /* Table Data */
