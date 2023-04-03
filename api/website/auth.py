@@ -29,8 +29,8 @@ def sign_up():
             flash('Email is not a UTC email.', category='error')
         elif psw1 != psw2:
             flash('Passwords do not match.', category='error')
-        elif len(psw1) <= 6:
-            flash('Passwords must be 20 characters or longer.', category='error')
+        elif len(psw1) <= 9:
+            flash('Passwords must be 9 characters or longer.', category='error')
         else:
             salted_psw = salt_and_hash(psw1)
             user = Users(

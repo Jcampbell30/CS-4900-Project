@@ -15,11 +15,16 @@ CREATE TABLE users (
 CREATE TABLE team (
   teamID INT NOT NULL AUTO_INCREMENT,
   teamName VARCHAR(50),
+  teacherID INT,
+  FOREIGN KEY (teacherID) REFERENCES users(userID),
   PRIMARY KEY (teamID)
 );
 
 CREATE TABLE rubric (
   rubricID INT NOT NULL AUTO_INCREMENT,
+  rubricName VARCHAR(50),
+  teacherID INT,
+  FOREIGN KEY (teacherID) REFERENCES users(userID),
   PRIMARY KEY (rubricID)
 );
 

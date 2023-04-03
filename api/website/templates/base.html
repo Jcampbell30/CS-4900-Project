@@ -12,10 +12,14 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
+
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
             {% for category, message in messages %}
-                {{ message }}
+                <div class="alert alert-danger alter-dismissible fade show " role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
