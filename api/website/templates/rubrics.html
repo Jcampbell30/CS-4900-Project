@@ -2,20 +2,32 @@
 {% block title %}Rubrics{% endblock %}
 {% block content %}
 
-     <form action="/action_page.php" method="post">
+     <form action="/rubrics" method="post">
     <link href="{{ url_for('static',filename='styles/field_style.css') }}" rel="stylesheet">
-
-     {% for row in rows %}
-    <tr>
-      <td>{{ row.name }}</td>
-      <td>{{ row.age }}</td>
-    </tr>
-    {% endfor %}
+    <h1>Rubric Name</h1>
     
-    <button type="submit" value="rubric">Create Rubric</button><br><br>
-    <button type="submit" value="Submit">Submit</button>
-  
+    <p>
+    <label for="name" id= "name">Rubric Name</label>
+    <input type="text" id="name" name="name">
+    <label for="age" id = "age">Due Date</label>
+    <input type="text" id="age" name="age">
+    </p>
+     {% for row in rows %}
+            <div>
+                <label for="name_{{ loop.index }}">Add Question</label>
+                <input type="text" id="name_{{ loop.index }}" name="name_{{ loop.index }}" value="{{ row.name }}">
+                <label for="age_{{ loop.index }}">Name</label>
+                <input type="text" id="age_{{ loop.index }}" name="age_{{ loop.index }}" value="{{ row.age }}">
+            </div>
+         
+        {% endfor %}
+           <div>
+              <button type="submit" value="rubric">Add Question</button>
+              </form> 
+              <form action = "/rubrics" method = "get">
+              <button type="submit" value="Submit">Submit</button>
+              </form>
+            </div>
 
-    </form> 
 
 {% endblock %}
