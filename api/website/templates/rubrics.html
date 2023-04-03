@@ -13,7 +13,7 @@
     <input type="text" id="age" name="age">
     </p>
      {% for row in rows %}
-            <div>
+            <div class = "add_question">
                 <label for="name_{{ loop.index }}">Add Question</label>
                 <input type="text" id="name_{{ loop.index }}" name="name_{{ loop.index }}" value="{{ row.name }}">
                 <label for="age_{{ loop.index }}">Name</label>
@@ -21,7 +21,7 @@
             </div>
          
         {% endfor %}
-           <div>
+           <div class = "submit_rubric">
               <button type="submit" value="rubric">Add Question</button>
               </form> 
               <form action = "/rubrics" method = "get">
