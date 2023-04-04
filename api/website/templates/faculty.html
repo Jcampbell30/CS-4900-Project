@@ -1,35 +1,35 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block title %}Faculty Overview{% endblock %}
 {% block content %}
 
-     <form action="/action_page.php" method="post">
-    <link href="{{ url_for('static',filename='styles/field_style.css') }}" rel="stylesheet">
+     <form action='/action_page.php' method='post'>
+    <link href='{{ url_for("static",filename="styles/field_style.css") }}' rel='stylesheet'>
     
-    <span style="display: inline-block;">
-    <button style="width: 200px; margin-right: 100px;" type="submit" value="rubric">Create New Rubric</button>
-    <button style="width: 200px; margin-right: 100px;" type="submit" value="rubric">Create New Team</button><br><br>
+    <span style='display: inline-block;'>
+    <button style='width: 200px; margin-right: 100px;' type='submit' value='rubric'>Create New Rubric</button>
+    <button style='width: 200px; margin-right: 100px;' type='submit' value='rubric'>Create New Team</button><br><br>
 
-    <button style="width: 200px; margin-right: 100px;" class="view-rubric-button" onclick="window.location.href='https://example.com/rubric-1';">View Rubric 1</button>
-    <button style="width: 200px; margin-right: 100px;" class="view-rubric-button" onclick="window.location.href='https://example.com/rubric-1';">View Team 1</button><br>
-    <button style="width: 200px; margin-right: 100px;" class="view-rubric-button" onclick="window.location.href='https://example.com/rubric-1';">View Rubric 2</button>
-    <button style="width: 200px; margin-right: 100px;" class="view-rubric-button" onclick="window.location.href='https://example.com/rubric-1';">View Team 2</button><br><br>
+    <button style='width: 200px; margin-right: 100px;' class='view-rubric-button' onclick='window.location.href="https://example.com/rubric-1";'>View Rubric 1</button>
+    <button style='width: 200px; margin-right: 100px;' class='view-rubric-button' onclick='window.location.href="https://example.com/rubric-1";'>View Team 1</button><br>
+    <button style='width: 200px; margin-right: 100px;' class='view-rubric-button' onclick='window.location.href="https://example.com/rubric-1";'>View Rubric 2</button>
+    <button style='width: 200px; margin-right: 100px;' class='view-rubric-button' onclick='window.location.href="https://example.com/rubric-1";'>View Team 2</button><br><br>
     
-    <select id="rubric-select" style="width: 200px; margin-right: 100px;">
-		<option value="">--Delete a Rubric--</option>
-		<option value="rubric-1">Rubric 1</option>
-		<option value="rubric-2">Rubric 2</option>
-		<option value="rubric-3">Rubric 3</option>
-		<option value="rubric-4">Rubric 4</option>
-		<option value="rubric-5">Rubric 5</option>
+    <select id='rubric-select' style='width: 200px; margin-right: 100px;'>
+		<option value=''>--Delete a Rubric--</option>
+		<option value='rubric-1'>Rubric 1</option>
+		<option value='rubric-2'>Rubric 2</option>
+		<option value='rubric-3'>Rubric 3</option>
+		<option value='rubric-4'>Rubric 4</option>
+		<option value='rubric-5'>Rubric 5</option>
 	  </select>
 
-    <select id="rubric-select" style="width: 200px; margin-right: 100px;">
-      <option value="">--Delete a Team--</option>
-      <option value="rubric-1">Rubric 1</option>
-      <option value="rubric-2">Rubric 2</option>
-      <option value="rubric-3">Rubric 3</option>
-      <option value="rubric-4">Rubric 4</option>
-      <option value="rubric-5">Rubric 5</option>
+    <select id='rubric-select' style='width: 200px; margin-right: 100px;'>
+      <option value=''>--Delete a Team--</option>
+      <option value='rubric-1'>Rubric 1</option>
+      <option value='rubric-2'>Rubric 2</option>
+      <option value='rubric-3'>Rubric 3</option>
+      <option value='rubric-4'>Rubric 4</option>
+      <option value='rubric-5'>Rubric 5</option>
       </select>
    
     </span>

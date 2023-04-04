@@ -4,15 +4,15 @@ from . import db
 from datetime import datetime
 
 
-views = Blueprint("views", __name__)
+views = Blueprint('views', __name__)
 
-@views.route("/")
+@views.route('/')
 def home():
-    return render_template("home.html")
+    return render_template('home.html')
 
-@views.route("/rubrics", methods=['GET', 'POST'])
+@views.route('/rubrics', methods=['GET', 'POST'])
 def rubrics():
-    if request.method == "POST":
+    if request.method == 'POST':
         rubric_name = request.form['rubric_name']
         date_time = request.form['date-time']
         
@@ -23,18 +23,18 @@ def rubrics():
             rubricName=rubric_name,
             rubricDate=mysql_date_str,
             teacherID=1,
-            )
+        )
         db.session.add(rubric)
         db.session.commit()
         
         print(date_time)
-        
-    return render_template("rubrics.html")
+    
+    return render_template('rubrics.html')
 
-@views.route("/teams", methods=['GET', 'POST'])
+@views.route('/teams', methods=['GET', 'POST'])
 def teams():
-    return render_template("teams.html")
+    return render_template('teams.html')
 
-@views.route("/assignments", methods=['GET', 'POST'])
+@views.route('/assignments', methods=['GET', 'POST'])
 def assignments():
-    return render_template("assignments.html")
+    return render_template('assignments.html')
