@@ -1,7 +1,5 @@
 from flask import Blueprint, render_template, request  # Import the necessary modules
 from .models import Rubric
-import requests
-from flask import flash
 from . import db
 from datetime import datetime
 
@@ -19,7 +17,7 @@ def rubrics():
         rubric_name = request.form['rubric_name']
         date_time = request.form['date-time']
         # Send data to API endpoint
-        dt_obj = datetime.fromisoformat(date_time)t
+        dt_obj = datetime.fromisoformat(date_time)
         mysql_date_str = dt_obj.strftime('%Y/%m/%d %H:%M:%S')
 
         rubric = Rubric(
