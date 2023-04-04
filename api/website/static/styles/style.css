@@ -4,7 +4,7 @@
 
   body {
     background: repeat;
-    background-image: url("ZOOM_BIRD_HEAD_on_BLUE.png");
+    background-image: url('ZOOM_BIRD_HEAD_on_BLUE.png');
     
   }
   
@@ -88,7 +88,7 @@
   
   /* Clear floats */
   .clearfix::after {
-    content: "";
+    content: '';
     clear: both;
     display: table;
   }
