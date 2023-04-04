@@ -11,10 +11,19 @@
   h1 {
     color: gold;
     font-style: bold;
+    -webkit-text-stroke: 2px black;
+    text-shadow: 2px 2px black;
   }
   h2{
     color: gold;
+    background-color: navy;
   }
+
+  h3{
+    color: black;
+    background-color: gainsboro;
+  }
+
   label{
     color:gold;
   }
@@ -83,6 +92,18 @@
     clear: both;
     display: table;
   }
+
+  /* Table Headings */
+  th {
+    background-color: #eab012;
+  }
+
+  /* Table Data */
+  td {
+    background-color: grey;
+    font-weight: bold;
+  }
+
   
   /* Change styles for cancel button and signup button on extra small screens */
   @media screen and (max-width: 300px) {

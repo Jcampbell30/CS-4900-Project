@@ -18,10 +18,14 @@ class Team(db.Model):
     __tablename__ = "team"
     teamID = db.Column(db.Integer, primary_key=True)
     teamName = db.Column(db.String(50))
+    teacherID = db.Column(db.Integer, db.ForeignKey('users.userID'))
 
 class Rubric(db.Model):
     __tablename__ = "rubric"
     rubricID = db.Column(db.Integer, primary_key=True)
+    rubricName = db.Column(db.String(50))
+    rubricDate = db.Column(db.String(50))
+    teacherID = db.Column(db.Integer, db.ForeignKey('users.userID'))
 
 class Question(db.Model):
     __tablename__ = "question"

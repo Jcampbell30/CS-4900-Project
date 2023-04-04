@@ -18,19 +18,20 @@ def sign_up():
         firstName = request.form.get('firstName')
         lastName = request.form.get('lastName')
         email = request.form.get("email")
+        print(email)
         psw1 = request.form.get("psw")
         psw2 = request.form.get("psw-repeat")
 
-
         email_exists = Users.query.filter_by(email=email).first()
+        
         if email_exists:
             flash('Email is already in use.', category='error')
         elif not check_email(email):
             flash('Email is not a UTC email.', category='error')
         elif psw1 != psw2:
             flash('Passwords do not match.', category='error')
-        elif len(psw1) <= 6:
-            flash('Passwords must be 20 characters or longer.', category='error')
+        elif len(psw1) <= 9:
+            flash('Passwords must be 9 characters or longer.', category='error')
         else:
             salted_psw = salt_and_hash(psw1)
             user = Users(
