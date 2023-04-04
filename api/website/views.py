@@ -39,3 +39,7 @@ def teams():
 @views.route("/assignments", methods=['GET', 'POST'])  # Define a route for the assignments page
 def assignments():
     return render_template("assignments.html")  # Render the assignments.html template
+
+@views.route("/faculty", methods=['GET', 'POST'])  # Define a route for the faculty page
+def faculty():
+    return render_template("faculty.html")  # Render the faculty.html template
