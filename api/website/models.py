@@ -14,6 +14,9 @@ class Users(db.Model, UserMixin):
     salt = db.Column(db.String(50))
     role = db.Column(db.String(50))
 
+    def get_id(self):
+        return self.userID
+
 class Team(db.Model):
     __tablename__ = 'team'
     teamID = db.Column(db.Integer, primary_key=True)
