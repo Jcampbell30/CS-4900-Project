@@ -19,9 +19,7 @@ def rubrics():
         rubric_name = request.form['rubric_name']
         date_time = request.form['date-time']
         # Send data to API endpoint
-        dt_obj = datetime.fromisoformat(date_time)
-
-# Format datetime object to MySQL format
+        dt_obj = datetime.fromisoformat(date_time)t
         mysql_date_str = dt_obj.strftime('%Y/%m/%d %H:%M:%S')
 
         rubric = Rubric(
