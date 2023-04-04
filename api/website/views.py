@@ -19,3 +19,7 @@ def teams():
 @views.route("/assignments", methods=['GET', 'POST'])
 def assignments():
     return render_template("assignments.html")
+
+@views.route("/faculty", methods=['GET', 'POST'])
+def faculty():
+    return render_template("faculty.html")
