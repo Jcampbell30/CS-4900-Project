@@ -18,6 +18,7 @@ def sign_up():
         firstName = request.form.get('firstName')
         lastName = request.form.get('lastName')
         email = request.form.get("email")
+        print(email)
         psw1 = request.form.get("psw")
         psw2 = request.form.get("psw-repeat")
 
