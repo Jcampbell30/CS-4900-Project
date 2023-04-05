@@ -29,13 +29,18 @@
                         <a class='nav-item nav-link' href='/'>Home</a>
                     </li>
                     {% if user.role == 's' %}
-                    <li>
-                        <a class='nav-item nav-link' href='/assignments'>Assignments</a>
-                    </li>
+                        <li>
+                            <a class='nav-item nav-link' href='/assignments'>Assignments</a>
+                        </li>
                     {% else %}
-                    <li>
-                        <a class='nav-item nav-link' href='/templates'>Templates</a>
-                    </li>
+                        <li>
+                            <a class='nav-item nav-link' href='/templates'>Templates</a>
+                        </li>
+                        {% if user.role == 'a' %}
+                            <li>
+                                <a class='nav-item nav-link' href='/admin'>Admin</a>
+                            </li>
+                        {% endif %}
                     {% endif %}
                 </ul>
                 <div class='navbar-nav ms-auto'>

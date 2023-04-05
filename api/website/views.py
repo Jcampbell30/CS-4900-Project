@@ -11,8 +11,8 @@ views = Blueprint('views', __name__)
 def home():
     return render_template('home.html', user=current_user)
 
-@login_required
 @views.route('/templates', methods=['GET', 'POST'])
+@login_required
 def templates():
 #    if current_user.role == 's':
 #        flash('Must be a member of faculty or a site admin to access this page.')
@@ -36,12 +36,19 @@ def templates():
     return render_template('template.html', user=current_user)
 
 @views.route('/teams', methods=['GET', 'POST'])
+@login_required
 def teams():
     return render_template('teams.html', user=current_user)
 
 @views.route('/assignments', methods=['GET', 'POST'])
+@login_required
 def assignments():
     return render_template('assignments.html', user=current_user)
+
+@views.route('/admin', methods=['GET', 'POST'])
+@login_required
+def admin():
+    return render_template('admin.html', user=current_user)
 
 
 
