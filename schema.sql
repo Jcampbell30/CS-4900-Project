@@ -34,7 +34,7 @@ CREATE TABLE template (
   templateDate VARCHAR(50),
   teacherID INT,
   FOREIGN KEY (teacherID) REFERENCES users(userID),
-  PRIMARY KEY (rubricID)
+  PRIMARY KEY (templateID)
 );
 
 CREATE TABLE question (
