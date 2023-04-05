@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="POST" style="border:1px solid #ccc">
+    <div class="container">
+      <h1>UTC Peer Review</h1>
+      <h2>Create Course</h2>
+      <hr>
+  
+      <label for="courseName"><b>Course Name</b></label>
+      <input type="text" placeholder="Enter Course Name" name="courseName" required>
+  
+      <label for="assignedFaculty"><b>Assigned Faculty</b></label>
+      <select name="assignedFaculty">
+        {% for f in faculty %}
+          <option value='{{ f.userID }}'>{{ f.userFirstName }} {{f.userLastName}}</option>
+        {% endfor %}
+      </select>
+  
+      <div class="clearfix">
+        <button type="button" class="cancelbtn">Cancel</button>
+        <button type="submit" class="signupbtn">Sign Up</button>
+      </div>
+    </div>
+  </form>
+{% endblock %}

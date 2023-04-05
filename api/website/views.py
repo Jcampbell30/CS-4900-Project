@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from .models import Template
+from .models import Users, Template, Course
 from . import db
 from datetime import datetime
 
@@ -73,7 +73,38 @@ def teams():
 @views.route('/admin', methods=['GET', 'POST'])
 @login_required
 def admin():
+    if current_user.role != 'a':
+        flash('Must be a site admin to access this page.', category='error')
+        return redirect(url_for('views.home'))
+    
     return render_template('admin.html', user=current_user)
+
+@views.route('/create-course', methods=['GET', 'POST'])
+@login_required
+def create_course():
+    if current_user.role != 'a':
+        flash('Must be a site admin to access this page.', category='error')
+        return redirect(url_for('views.home'))
+    
+    if request.method == 'POST':
+        name = request.form['courseName']
+        id = request.form['assignedFaculty']
+
+        course_exists = Course.query.filter_by(courseName=name).first()
+        if course_exists:
+            flash('Course name already in use.', category='error')
+        else:
+            course = Course(
+                courseName = name,
+                teacherID = id
+            )
+            db.session.add(course)
+            db.session.commit()
+            flash('Course created successfully!', category='success')
+    
+    all_faculty = Users.query.filter_by(role='f').all()
+
+    return render_template('create-course.html', user=current_user, faculty=all_faculty)
 
 ##########################
 # DELETE BEFORE DELIVERY #
