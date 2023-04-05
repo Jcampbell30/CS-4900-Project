@@ -12,18 +12,26 @@ CREATE TABLE users (
   UNIQUE (email)
 );
 
+CREATE TABLE course (
+  courseID INT NOT NULL AUTO_INCREMENT,
+  courseName VARCHAR(50),
+  teacherID INT,
+  FOREIGN KEY (teacherID) REFERENCES users(userID),
+  PRIMARY KEY (courseID)
+);
+
 CREATE TABLE team (
   teamID INT NOT NULL AUTO_INCREMENT,
   teamName VARCHAR(50),
-  teacherID INT,
-  FOREIGN KEY (teacherID) REFERENCES users(userID),
+  courseID INT,
+  FOREIGN KEY (courseID) REFERENCES course(courseID),
   PRIMARY KEY (teamID)
 );
 
-CREATE TABLE rubric (
-  rubricID INT NOT NULL AUTO_INCREMENT,
-  rubricName VARCHAR(50),
-  rubricDate VARCHAR(50),
+CREATE TABLE template (
+  templateID INT NOT NULL AUTO_INCREMENT,
+  templateName VARCHAR(50),
+  templateDate VARCHAR(50),
   teacherID INT,
   FOREIGN KEY (teacherID) REFERENCES users(userID),
   PRIMARY KEY (rubricID)
@@ -44,19 +52,28 @@ CREATE TABLE teamAssignment (
   PRIMARY KEY (teamAssignmentID)
 );
 
-CREATE TABLE rubricAssignment (
-  rubricAssignmentID INT NOT NULL AUTO_INCREMENT,
-  rubricID INT,
+CREATE TABLE templateAssignment (
+  templateAssignmentID INT NOT NULL AUTO_INCREMENT,
+  templateID INT,
   teamID INT,
-  FOREIGN KEY (rubricID) REFERENCES team(teamID),
-  PRIMARY KEY (rubricAssignmentID)
+  FOREIGN KEY (templateID) REFERENCES team(teamID),
+  PRIMARY KEY (templateAssignmentID)
 );
 
 CREATE TABLE questionAssignment (
   questionAssignmentID INT NOT NULL AUTO_INCREMENT,
-  rubricID INT,
+  templateID INT,
   questionID INT,
-  FOREIGN KEY (rubricID) REFERENCES rubric(rubricID),
+  FOREIGN KEY (templateID) REFERENCES template(templateID),
   FOREIGN KEY (questionID) REFERENCES question(questionID),
   PRIMARY KEY (questionAssignmentID)
+);
+
+CREATE TABLE studentAssignment(
+  studentAssignmentID INT NOT NULL AUTO_INCREMENT,
+  studentID INT,
+  courseID INT,
+  FOREIGN KEY (studentID) REFERENCES users(userID),
+  FOREIGN KEY (courseID) REFERENCES course(courseID),
+  PRIMARY KEY (studentAssignmentID)
 );

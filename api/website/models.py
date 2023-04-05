@@ -17,17 +17,23 @@ class Users(db.Model, UserMixin):
     def get_id(self):
         return self.userID
 
+class Course(db.Model):
+    __tablename__ = 'course'
+    courseID = db.Column(db.Integer, primary_key=True)
+    courseName = db.Column(db.String(50))
+    teacherID = db.Column(db.Integer, db.ForeignKey('users.userID'))
+
 class Team(db.Model):
     __tablename__ = 'team'
     teamID = db.Column(db.Integer, primary_key=True)
     teamName = db.Column(db.String(50))
-    teacherID = db.Column(db.Integer, db.ForeignKey('users.userID'))
+    courseID = db.Column(db.Integer, db.ForeignKey('course.courseID'))
 
-class Rubric(db.Model):
-    __tablename__ = 'rubric'
-    rubricID = db.Column(db.Integer, primary_key=True)
-    rubricName = db.Column(db.String(50))
-    rubricDate = db.Column(db.String(50))
+class Template(db.Model):
+    __tablename__ = 'template'
+    templateID = db.Column(db.Integer, primary_key=True)
+    templateName = db.Column(db.String(50))
+    templateDate = db.Column(db.String(50))
     teacherID = db.Column(db.Integer, db.ForeignKey('users.userID'))
 
 class Question(db.Model):
@@ -44,14 +50,20 @@ class TeamAssignment(db.Model):
     teamID = db.Column(db.Integer, db.ForeignKey('team.teamID'))
     userID = db.Column(db.Integer, db.ForeignKey('users.userID'))
 
-class RubricAssignment(db.Model):
-    __tablename__ = 'rubricAssignment'
-    rubricAssignmentID = db.Column(db.Integer, primary_key=True)
-    rubricID = db.Column(db.Integer, db.ForeignKey('rubric.rubricID'))
+class TemplateAssignment(db.Model):
+    __tablename__ = 'templateAssignment'
+    templateAssignmentID = db.Column(db.Integer, primary_key=True)
+    templateID = db.Column(db.Integer, db.ForeignKey('template.templateID'))
     teamID = db.Column(db.Integer, db.ForeignKey('team.teamID'))
 
 class QuestionAssignment(db.Model):
     __tablename__ = 'questionAssignment'
     questionAssignmentID = db.Column(db.Integer, primary_key=True)
-    rubricID = db.Column(db.Integer, db.ForeignKey('rubric.rubricID'))
+    templateID = db.Column(db.Integer, db.ForeignKey('template.templateID'))
     questionID = db.Column(db.Integer, db.ForeignKey('question.questionID'))
+
+class StudentAssignment(db.Model):
+    __tablename__ = 'studentAssignment'
+    studentAssignmentID = db.Column(db.Integer, primary_key=True)
+    studentID = db.Column(db.Integer, db.ForeignKey('users.userID'))
+    courseID = db.Column(db.Integer, db.ForeignKey('course.courseID'))
