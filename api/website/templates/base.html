@@ -9,6 +9,7 @@
         rel='stylesheet' integrity='sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp' 
         crossorigin='anonymous'
     />
+    <link rel='stylesheet' type='text/css' href="{{ url_for('static',filename='styles/style.css') }}">
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
@@ -23,11 +24,28 @@
                 <span class='navbar-toggler-icon'></span>
             </button>
             <div class='collapse navbar-collapse' id='navbar'>
-                <div class='navbar-nav'>
-                    <a class='nav-item nav-link' href='/'>Home</a>
-                    <a class='nav-item nav-link' href='/login'>Login</a>
-                    <a class='nav-item nav-link' href='/sign-up'>Sign Up</a>
-                    <a class= 'nav-item nav-link' href='/rubrics'>Rubrics</a>
+                <ul class='navbar-nav'>
+                    <li>
+                        <a class='nav-item nav-link' href='/'>Home</a>
+                    </li>
+                    {% if user.role == 's' %}
+                    <li>
+                        <a class='nav-item nav-link' href='/assignments'>Assignments</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a class='nav-item nav-link' href='/templates'>Templates</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div class='navbar-nav ms-auto'>
+                    {% if user.is_authenticated %}
+                        <p class='nav-item nav-text text-light nav-user-name'>Hello {{ user.userFirstName }}</p>
+                        <a class='nav-item nav-link' href='/logout'>Logout</a>
+                    {% else %}
+                        <a class='nav-item nav-link' href='/login'>Login</a>
+                        <a class='nav-item nav-link' href='/sign-up'>Sign Up</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
