@@ -7,16 +7,42 @@ from datetime import datetime
 
 views = Blueprint('views', __name__)
 
+##################
+# EVERYONE VIEWS #
+##################
+
 @views.route('/')
 def home():
     return render_template('home.html', user=current_user)
 
+#################
+# STUDENT VIEWS #
+#################
+
+@views.route('/assignments', methods=['GET', 'POST'])
+@login_required
+def assignments():
+    return render_template('assignments.html', user=current_user)
+
+#################
+# FACULTY VIEWS #
+#################
+
+@views.route('/faculty', methods=['GET', 'POST'])
+@login_required
+def faculty():
+    if current_user.role == 's':
+        flash('Must be a member of faculty or a site admin to access this page.', category='error')
+        return redirect(url_for('views.home'))
+    
+    return render_template('faculty.html', user=current_user)
+
 @views.route('/templates', methods=['GET', 'POST'])
 @login_required
 def templates():
-#    if current_user.role == 's':
-#        flash('Must be a member of faculty or a site admin to access this page.')
-#        return redirect(url_for('views.home'))
+    if current_user.role == 's':
+        flash('Must be a member of faculty or a site admin to access this page.', category='error')
+        return redirect(url_for('views.home'))
 
     if request.method == 'POST':
         template_name = request.form['rubric_name']
@@ -40,17 +66,14 @@ def templates():
 def teams():
     return render_template('teams.html', user=current_user)
 
-@views.route('/assignments', methods=['GET', 'POST'])
-@login_required
-def assignments():
-    return render_template('assignments.html', user=current_user)
+################
+# ADMIN VIEWS  #
+################
 
 @views.route('/admin', methods=['GET', 'POST'])
 @login_required
 def admin():
     return render_template('admin.html', user=current_user)
-
-
 
 ##########################
 # DELETE BEFORE DELIVERY #
