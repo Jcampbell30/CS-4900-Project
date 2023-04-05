@@ -109,6 +109,14 @@
     margin-right: 3px;
     margin-left: 3px;
   }
+
+  .custom-alert {
+    margin: 8px;
+  }
+
+  .custom-alert-text {
+    align-content: center;
+  }
   
   /* Change styles for cancel button and signup button on extra small screens */
   @media screen and (max-width: 300px) {
