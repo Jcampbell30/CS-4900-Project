@@ -35,6 +35,8 @@ class Template(db.Model):
     templateName = db.Column(db.String(50))
     templateDate = db.Column(db.String(50))
     teacherID = db.Column(db.Integer, db.ForeignKey('users.userID'))
+    gradingScale = db.Column(db.Integer)
+    numberQuestions = db.Column(db.Integer)
 
 class Question(db.Model):
     __tablename__ = 'question'
