@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from .models import Users, Template, Course
+from .models import Users, Template, Course, StudentAssignment
 from . import db
 from datetime import datetime
 
@@ -76,8 +76,25 @@ def admin():
     if current_user.role != 'a':
         flash('Must be a site admin to access this page.', category='error')
         return redirect(url_for('views.home'))
+
+    all_courses = Course.query.all()
+
+    return render_template('admin.html', user=current_user, courses=all_courses)
+
+@views.route('/course', methods=['GET', 'POST'])
+@login_required
+def course():
+    if current_user.role != 'a':
+        flash('Must be a site admin to access this page.', category='error')
+        return redirect(url_for('views.home'))
     
-    return render_template('admin.html', user=current_user)
+    if request.method=='POST':
+        if request.form['courseSelection']:
+            course_id = request.form['courseSelection']
+            course_selection = Course.query.filter_by(courseID = course_id).first()
+            course_students = StudentAssignment.query.filter_by(courseID = course_id).all()
+
+            return render_template('course.html', user=current_user, course=course_selection, students=course_students)
 
 @views.route('/create-course', methods=['GET', 'POST'])
 @login_required

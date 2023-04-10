@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{{course.courseName}}</h1>
+    <div>
+        <h3>All Students Assigned</h3><br>
+        {% for student in students %}
+            <p>{{student.userFirstName}} {{student.userLastName}}</p><br>
+        {% endfor %}
+    </div>
+    <form method='POST'>
+        <label for="student_id"><b>Student ID</b></label>
+        <input type="text" placeholder="AAA111" name="student_id" required>
+        <button type="submit" class="signupbtn">Assign Student</button>
+    </form>
+
+{% endblock %}
