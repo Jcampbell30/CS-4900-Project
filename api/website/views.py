@@ -37,7 +37,7 @@ def faculty():
 
     my_templates = Template.query.filter_by(teacherID=current_user.userID).all()
     
-    return render_template('faculty.html', user=current_user,templates = my_templates)
+    return render_template('faculty.html', user=current_user,templates=my_templates)
 
 @views.route('/templates', methods=['GET', 'POST'])
 @login_required
@@ -72,35 +72,33 @@ def questions():
     if current_user.role == 's':
         flash("Must not be a student")
         return redirect(url_for("views.home"))
-    teacher_templates = db.session.query(Users.userID, Template.templateName, Template.numberQuestions, Template.templateID).\
-                    join(Template).all()
-    num_questions = teacher_templates[0][2]
-    template_name = teacher_templates[0][1]
-    template_name = template_name.upper()
-    stmt = db.session.query(QuestionAssignment.questionAssignmentID)\
-                .join(Question, Question.questionID == QuestionAssignment.questionID)\
-                .join(Template, Template.templateID == Question.questionID)\
-                .filter(Template.templateID == TemplateAssignment.templateID)\
-                .with_entities(QuestionAssignment.questionAssignmentID).all()
-    print(f"the sql statement: {stmt}")
-    print(f"number of questions: {num_questions}")
-    for i in range (num_questions):
-        print(i)
-    print(f"The teacher templates: {teacher_templates},and the number of questions:  {num_questions}")
-    if request.method == 'POST':
+    
+    if request.method=='GET':
+        template_id = request.form['templateSelect']
+
+    if request.method=='POST':
+        template = Template.query.filter_by(templateID=request.form['templateSelect'])
+        num_questions = template.numberQuestions
+        template_name = template.templateName
+        template_name = template_name.upper()
+        print(f"number of questions: {num_questions}")
+        for i in range (num_questions):
+            print(i)
         for i in range(num_questions):
             question_description = request.form.get("question{}".format(i+1))
             print(f"question_description is: {question_description}")
             question = Question(questionDesc = question_description)
-            template_id = teacher_templates[0][3]
+            template_id = template.templateID
             q_a = QuestionAssignment(templateID = template_id,questionID = question.questionID )
             print(template_id)
             db.session.add(q_a)
             db.session.add(question)
             db.session.commit()
-        
+            
 
-    return render_template("questions.html", user = current_user, num_questions = num_questions,template_name = template_name)
+        return render_template("questions.html", user = current_user, num_questions = num_questions,template_name = template_name)
+    flash('Please pick a template from the list of templates.', category='error')
+    return redirect(url_for('views.faculty'))
 
     created = False #boolean to check if the assignments have been saved to the template
 

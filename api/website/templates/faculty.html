@@ -2,42 +2,45 @@
 {% block title %}Faculty Overview{% endblock %}
 {% block content %}
     <!---
-           <button style='width: 200px; margin-right: 100px;' class='view-rubric-button' onclick='window.location.href="https://example.com/questions.html";'>View Template 1</button>
+      <button style='width: 200px; margin-right: 100px;' class='view-rubric-button' onclick='window.location.href="https://example.com/questions.html";'>View Template 1</button>
       <button style='width: 200px; margin-right: 100px;' class='view-rubric-button' onclick='window.location.href="https://example.com/rubric-1";'>View Team 1</button><br>
       <button style='width: 200px; margin-right: 100px;' class='view-rubric-button' onclick='window.location.href="https://example.com/rubric-1";'>View Template 2</button>
       <button style='width: 200px; margin-right: 100px;' class='view-rubric-button' onclick='window.location.href="https://example.com/rubric-1";'>View Team 2</button><br><br>
     -->
     <span style='display: inline-block;'>
+    
     <form action='/templates'><button style='width: 200px; margin-right: 100px;' type='submit'>Create New Template</button></form>
     
     <form action='/teams'><button style='width: 200px; margin-right: 100px;' type='submit'>Create New Team</button></form><br><br>
     
- 
-      <p>
-        {% for template_name in template_names %}
-        <form action='/questions'><button style='width: 200px; margin-right: 100px;' id = "template_name" type='submit'>{{template_name}}</button></form>
-        {% endfor %}
-    </p>
-    
-      
-      <select id='rubric-select' style='width: 200px; margin-right: 100px;'>
+    <div class='badge bg-dark'>
+      <form method='GET' action='/questions'>
+        <select name='templateSelect'>
+          {% for template in templates %}
+            <option value='{{ template.templateID }}'>{{template.templateName}}</option>
+          {% endfor %}
+        </select><br>
+        <button type='submit'>Choose Template</button>
+      </form>
+    </div><br><br>
+
+    <select id='rubric-select' style='width: 200px; margin-right: 100px;'>
       <option value=''>--Delete a Template--</option>
       <option value='rubric-1'>Template 1</option>
       <option value='rubric-2'>Rubric 2</option>
       <option value='rubric-3'>Rubric 3</option>
       <option value='rubric-4'>Rubric 4</option>
       <option value='rubric-5'>Rubric 5</option>
-      </select>
+    </select>
 
-      <select id='rubric-select' style='width: 200px; margin-right: 100px;'>
+    <select id='rubric-select' style='width: 200px; margin-right: 100px;'>
       <option value=''>--Delete a Team--</option>
       <option value='rubric-1'>Rubric 1</option>
       <option value='rubric-2'>Rubric 2</option>
       <option value='rubric-3'>Rubric 3</option>
       <option value='rubric-4'>Rubric 4</option>
       <option value='rubric-5'>Rubric 5</option>
-      </select>
-    </form>
+    </select>
     </span>
     
      
