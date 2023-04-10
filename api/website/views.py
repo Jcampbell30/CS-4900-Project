@@ -35,20 +35,9 @@ def faculty():
         flash('Must be a member of faculty or a site admin to access this page.', category='error')
         return redirect(url_for('views.home'))
 
-    my_templates = db.session.query(Users.userID, Template.templateName, Template.numberQuestions).\
-                    join(Template).all()
-    if len(my_templates) < 1:
-        my_templates = [(1,"View Template",3),(1, "View Template", 3)]
-    i = 0
-    print(len(my_templates))
-    template_names = []
-    while i < len(my_templates):
-        template_names.append(my_templates[i][1])
-        i+=1
+    my_templates = Template.query.filter_by(teacherID=current_user.userID).all()
     
-    print(template_names)
-    
-    return render_template('faculty.html', user=current_user,template_names = template_names)
+    return render_template('faculty.html', user=current_user,templates = my_templates)
 
 @views.route('/templates', methods=['GET', 'POST'])
 @login_required
@@ -75,13 +64,11 @@ def templates():
         )
         db.session.add(template)
         db.session.commit()
-       
         
     return render_template('template.html', user=current_user)
 
 @views.route("/questions", methods = ['GET','POST'])
 def questions():
-
     if current_user.role == 's':
         flash("Must not be a student")
         return redirect(url_for("views.home"))
@@ -127,7 +114,7 @@ def questions():
 """
     IF not created: 
         create view. 
-    """
+"""
 @views.route('/teams', methods=['GET', 'POST'])
 @login_required
 def teams():
@@ -190,6 +177,24 @@ def create_course():
     all_faculty = Users.query.filter_by(role='f').all()
 
     return render_template('create-course.html', user=current_user, faculty=all_faculty)
+
+@views.route('/permissions')
+@login_required
+def permissions():
+    if current_user.role != 'a':
+        flash('Must be a site admin to access this page.', category='error')
+        return redirect(url_for('views.home'))
+    
+    if request.method=='POST':
+        new_faculty = Users.query.filter_by(email=request.form['email']).first()
+        new_faculty.role = 'f'
+        db.session.commit()
+        flash('New faculty added!', category='success')
+
+    all_faculty = Users.query.filter_by(role='f').all()
+
+    return render_template('permissions.html', user=current_user, faculty=all_faculty)
+
 
 ##########################
 # DELETE BEFORE DELIVERY #
