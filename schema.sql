@@ -33,6 +33,8 @@ CREATE TABLE template (
   templateName VARCHAR(50),
   templateDate VARCHAR(50),
   teacherID INT,
+  gradingScale INT,
+  numberQuestions INT,
   FOREIGN KEY (teacherID) REFERENCES users(userID),
   PRIMARY KEY (templateID)
 );
