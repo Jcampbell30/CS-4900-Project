@@ -72,31 +72,31 @@ def questions():
     if current_user.role == 's':
         flash("Must not be a student")
         return redirect(url_for("views.home"))
-    
-    if request.method=='GET':
-        template_id = request.form['templateSelect']
 
     if request.method=='POST':
-        template = Template.query.filter_by(templateID=request.form['templateSelect'])
+        if 'templateSelection' in request.form:
+            template_id = request.form['templateSelection']
+        else:
+            template_id = request.form['template_id']
+        template = Template.query.filter_by(templateID=template_id).first()
         num_questions = template.numberQuestions
         template_name = template.templateName
-        template_name = template_name.upper()
-        print(f"number of questions: {num_questions}")
-        for i in range (num_questions):
-            print(i)
-        for i in range(num_questions):
-            question_description = request.form.get("question{}".format(i+1))
-            print(f"question_description is: {question_description}")
-            question = Question(questionDesc = question_description)
-            template_id = template.templateID
-            q_a = QuestionAssignment(templateID = template_id,questionID = question.questionID )
-            print(template_id)
-            db.session.add(q_a)
-            db.session.add(question)
-            db.session.commit()
-            
-
-        return render_template("questions.html", user = current_user, num_questions = num_questions,template_name = template_name)
+        if 'templateSelection' not in request.form:
+            print(f"number of questions: {num_questions}")
+            for i in range (num_questions):
+                print(i)
+            for i in range(num_questions):
+                question_description = request.form.get("question{}".format(i+1))
+                print(f"question_description is: {question_description}")
+                question = Question(questionDesc = question_description)
+                template_id = template.templateID
+                q_a = QuestionAssignment(templateID = template_id,questionID = question.questionID )
+                print(template_id)
+                db.session.add(q_a)
+                db.session.add(question)
+                db.session.commit()
+        
+        return render_template("questions.html", user = current_user, num_questions = num_questions,template_name = template_name, template_id=template_id)
     flash('Please pick a template from the list of templates.', category='error')
     return redirect(url_for('views.faculty'))
 

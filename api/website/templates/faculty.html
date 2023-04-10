@@ -13,16 +13,19 @@
     
     <form action='/teams'><button style='width: 200px; margin-right: 100px;' type='submit'>Create New Team</button></form><br><br>
     
-    <div class='badge bg-dark'>
-      <form method='GET' action='/questions'>
-        <select name='templateSelect'>
-          {% for template in templates %}
-            <option value='{{ template.templateID }}'>{{template.templateName}}</option>
-          {% endfor %}
-        </select><br>
-        <button type='submit'>Choose Template</button>
+    <div class='badge bg-dark text-center'>
+      <form method='POST' action='/questions'>
+          <label for='templateSelection'><b>Select A Template</b></label>
+          <select name='templateSelection'>
+              {% for template in templates %}
+                  <option value='{{ template.templateID }}'>{{ template.templateName }}</option>
+              {% endfor %}
+          </select>
+          <div class='clearfix'>
+              <button type="submit" class="signupbtn">Submit</button>
+          </div>
       </form>
-    </div><br><br>
+  </div>
 
     <select id='rubric-select' style='width: 200px; margin-right: 100px;'>
       <option value=''>--Delete a Template--</option>
