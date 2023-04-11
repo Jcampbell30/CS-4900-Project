@@ -80,7 +80,6 @@ def questions():
         template_id = request.form.get('template_id')  
     template = Template.query.filter_by(templateID=template_id).first()
     question = Question.query.filter_by(templateID=template_id).all()
-    print(f"question: {len(question)}")
     if len(question) == 0:
         created = False
         if request.method=='POST':
@@ -91,14 +90,8 @@ def questions():
             template = Template.query.filter_by(templateID=template_id).first()
             num_questions = template.numberQuestions
             template_name = template.templateName
-            print(f"template id: {template_id}")
-            print(f"template name: {template_name}")
-            print(f"number of questions: {num_questions}")
         
             if 'templateSelection' not in request.form:
-                print(f"number of questions: {num_questions}")
-                for i in range (num_questions):
-                    print(i)
                 for i in range(num_questions):
                     question_description = request.form.get("question{}".format(i))
                     question = Question(questionDesc = question_description, templateID=template_id)
@@ -111,15 +104,12 @@ def questions():
             return render_template("questions.html", user = current_user, num_questions = num_questions,template_name = template_name, template_id=template_id)
     else:
         created = True
-        print("question is not none")
         template = Template.query.filter_by(templateID=template_id).first()
         template_name = template.templateName
         my_questions = []
         num_questions = len(question)
         for i in range(len(question)):
             my_questions.append(question[i].questionDesc)
-        print(my_questions)
-        print("template_id:  {template}")
         return render_template("questions.html", user = current_user, template_id=template_id, my_questions=my_questions, num_questions=num_questions,created = created, template_name = template.templateName)
         
     return redirect(url_for('views.faculty'))
