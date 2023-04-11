@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_user, logout_user, login_required, current_user
 from . import db
 from .models import Users
-import hashlib, secrets
+import hashlib, os, base64, re
 
 auth = Blueprint('auth', __name__)
 
@@ -23,7 +23,7 @@ def login():
         else:
             flash('Email does not exist.', category='error')
 
-    return render_template('login.html')
+    return render_template('login.html', user=current_user)
 
 @auth.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
@@ -45,6 +45,8 @@ def sign_up():
             flash('Passwords do not match.', category='error')
         elif len(psw1) < 9:
             flash('Passwords must be 9 characters or longer.', category='error')
+        elif not verify_psw_rules(psw1):
+            flash('Passwords must contain one of each of the following: An uppercase letter, a lowercase letter, a number, and a special character.')
         else:
             salted_psw = salt_and_hash(psw1)
             user = Users(
@@ -60,8 +62,7 @@ def sign_up():
             flash('User created!')
             return redirect(url_for('views.home'))
         
-    return render_template('signup.html')
-
+    return render_template('signup.html', user=current_user)
 
 @auth.route('/logout')
 @login_required
@@ -77,19 +78,21 @@ def check_email(email : str):
         return True
     return False
 
-def salt_and_hash(psw:str):
-    salt = secrets.token_bytes(16)
-    salted_password = str(salt) + psw
-    salted_password = salted_password.encode('utf-8')
-    hashed_password = hashlib.sha256(salted_password).hexdigest()
-    print(f'User creation pass: {hashed_password}')
-    return [salt, hashed_password]
-
-def check_hash(psw:str, salt:str, hashed_psw:str) -> bool:
-    salted_password = salt + psw
-    salted_password = salted_password.encode('utf-8')
-    hashed_password = hashlib.sha256(salted_password).hexdigest()
-    print(f'User access pass: {hashed_password}')
-    if hashed_password == hashed_psw:
+def verify_psw_rules(psw:str):
+    pattern = re.compile(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$')
+    if re.search(pattern, psw):
         return True
     return False
+
+def salt_and_hash(psw:str):
+    salt = os.urandom(32)
+    key = hashlib.pbkdf2_hmac('sha256', psw.encode('utf-8'), salt, 10)
+    salt_b64 = base64.b64encode(salt).decode('utf-8')
+    key_b64 = base64.b64encode(key).decode('utf-8')
+    return [salt_b64, key_b64]
+
+def check_hash(psw:str, salt:str, hashed_psw:str) -> bool:
+    b_salt = base64.b64decode(salt)
+    b_hashed_psw = base64.b64decode(hashed_psw)
+    key = hashlib.pbkdf2_hmac('sha256', psw.encode('utf-8'), b_salt, 10)
+    return key == b_hashed_psw

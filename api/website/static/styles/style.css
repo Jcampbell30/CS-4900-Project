@@ -5,13 +5,11 @@
   body {
     background: repeat;
     background-image: url('ZOOM_BIRD_HEAD_on_BLUE.png');
-    
   }
   
   h1 {
     color: gold;
     font-style: bold;
-    -webkit-text-stroke: 2px black;
     text-shadow: 2px 2px black;
   }
   h2{
@@ -20,8 +18,7 @@
   }
 
   h3{
-    color: black;
-    background-color: gainsboro;
+    color: gold;
   }
 
   label{
@@ -104,6 +101,20 @@
     font-weight: bold;
   }
 
+  .nav-user-name {
+    margin-top: 8px;
+    margin-bottom: 2px;
+    margin-right: 3px;
+    margin-left: 3px;
+  }
+
+  .custom-alert {
+    margin: 8px;
+  }
+
+  .custom-alert-text {
+    align-content: center;
+  }
   
   /* Change styles for cancel button and signup button on extra small screens */
   @media screen and (max-width: 300px) {

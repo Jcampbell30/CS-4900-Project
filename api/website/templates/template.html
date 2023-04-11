@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Templates{% endblock %}
+{% block content %}
+
+ <form action="/templates" method="post">
+<link href="{{ url_for('static',filename='styles/field_style.css') }}" rel="stylesheet">
+<h1>Templates</h1>
+
+<p>
+<label for="rubric_name" id="rubric_name" required>Templates</label>
+<input type="text" id="rubric_name" name="rubric_name">
+<label for="date-time" id="date-time" required >Due Date</label>
+<input type="datetime-local" name="date-time"><br>
+
+ <label for="grading_scale" id="grading_scale">Grading Scale:</label>
+        <input type="number" id="grading_scale" name="grading_scale">
+    </p>
+    <p>
+        <label for="num_questions" input type="number" step="1" pattern="\d+">Number of Questions:</label>
+        <input type="number" id="num_questions" name="num_questions">
+    </p>
+    
+    
+  
+
+<button type="submit" value="submit_rubric">Submit</button>
+</p>
+
+
+
+{% endblock %}

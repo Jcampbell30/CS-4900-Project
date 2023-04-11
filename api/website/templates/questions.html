@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Template Form{% endblock %}
+{% block content %}
+
+<form action="/questions" method="post"> <!-- Update the form action and method attributes -->
+    <link href="{{ url_for('static',filename='styles/question_style.css') }}" rel="stylesheet">
+    <label for="questions" id="questions">{{ template_name }}</label>
+    <input type="hidden" name="template_id" value="{{ template_id }}">
+    <p>
+        {% for i in range(1, num_questions + 1) %}
+            <label for="question{{ i }}" id="question{{ i }}" required>Question Description</label>
+            <input type="text" id="question{{ i }}" name="question{{ i }}" required><br>
+        {% endfor %}
+    </p>
+    <button type="submit" name="submit" value="submit">Submit Questions</button> <!-- Add name and value attributes to the submit button -->
+</form>
+
+
+{%endblock%}
