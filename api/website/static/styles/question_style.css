@@ -35,3 +35,25 @@ form {
     p{
         width: 100%;
     }
+    table{
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      min-height: 100vh;
+      border: "1px solid black";
+      border-collapse: collapse;
+      width: 100%;
+      height: auto;
+      position: relative;
+    }
+    td{
+      font-family: 'Courier New', Courier, monospace;
+      font-size: medium;
+      border: 1px solid black;
+      background-color: navy;
+    
+    }
+   
