@@ -179,15 +179,25 @@ def permissions():
         return redirect(url_for('views.home'))
     
     if request.method=='POST':
-        new_faculty = Users.query.filter_by(userID=request.form['email_selection']).first()
-        print()
-        new_faculty.role = 'f'
-        db.session.commit()
-        flash('New faculty added!', category='success')
+        if 'email_selection' in request.form:
+            new_faculty = Users.query.filter_by(userID=request.form['email_selection']).first()
+            new_faculty.role = 'f'
+            db.session.commit()
+            flash('New faculty added!', category='success')
+        elif 'demote' in request.form:
+            faculty = Users.query.filter_by(userID = request.form['demote']).first()
+            print(faculty)
+            faculty.role = 's'
+            db.session.commit()
+            flash('Faculty member successfully demoted!', category='success')
+
 
     all_faculty = Users.query.filter_by(role='f').all()
 
     valid_emails = Users.query.filter(Users.email.contains('@utc.edu')).all()
+    for email in valid_emails:
+        if (email.role == 'f') or (email.role == 'a'):
+            valid_emails.remove(email)
     
     return render_template('permissions.html', user=current_user, faculty=all_faculty, valid_emails=valid_emails)
 
