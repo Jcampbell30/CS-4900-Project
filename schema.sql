@@ -42,6 +42,8 @@ CREATE TABLE template (
 CREATE TABLE question (
   questionID INT NOT NULL AUTO_INCREMENT,
   questionDesc VARCHAR(250),
+  templateID INT,
+  FOREIGN KEY (templateID) REFERENCES template(templateID),
   PRIMARY KEY (questionID)
 );
 
@@ -62,15 +64,6 @@ CREATE TABLE templateAssignment (
   numberQuestions INT,
   FOREIGN KEY (templateID) REFERENCES team(teamID),
   PRIMARY KEY (templateAssignmentID)
-);
-
-CREATE TABLE questionAssignment (
-  questionAssignmentID INT NOT NULL AUTO_INCREMENT,
-  templateID INT,
-  questionID INT,
-  FOREIGN KEY (templateID) REFERENCES template(templateID),
-  FOREIGN KEY (questionID) REFERENCES question(questionID),
-  PRIMARY KEY (questionAssignmentID)
 );
 
 CREATE TABLE studentAssignment(

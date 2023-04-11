@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from .models import Users, Template, Course, StudentAssignment, TemplateAssignment, Question, QuestionAssignment
+from .models import Users, Template, Course, StudentAssignment, TemplateAssignment, Question
 from . import db
 from datetime import datetime
 
@@ -87,15 +87,8 @@ def questions():
                 print(i)
             for i in range(num_questions):
                 question_description = request.form.get("question{}".format(i+1))
-                print(f"question_description is: {question_description}")
-                question = Question(questionDesc = question_description)
+                question = Question(questionDesc = question_description, templateID=template_id)
                 db.session.add(question)
-                db.session.commit()
-                print(f'Question ID: {question.questionID}')
-                template_id = template.templateID
-                q_a = QuestionAssignment(templateID = template_id, questionID = question.questionID )
-                print(template_id)
-                db.session.add(q_a)
                 db.session.commit()
         
         return render_template("questions.html", user = current_user, num_questions = num_questions,template_name = template_name, template_id=template_id)
