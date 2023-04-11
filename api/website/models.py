@@ -41,7 +41,8 @@ class Template(db.Model):
 class Question(db.Model):
     __tablename__ = 'question'
     questionID = db.Column(db.Integer, primary_key=True)
-    questionDesc = db.Column(db.String(250))
+    questionDesc = db.Column(db.String(250)),
+    
 
 ##################
 # Relation table #
