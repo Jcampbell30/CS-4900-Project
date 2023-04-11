@@ -9,7 +9,7 @@
       <label for="courseName"><b>Course Name</b></label>
       <input type="text" placeholder="Enter Course Name" name="courseName" required>
   
-      <label for="assignedFaculty"><b>Assigned Faculty</b></label>
+      <label for="assignedFaculty"><b>Assigned Faculty</b></label><br>
       <select name="assignedFaculty">
         {% for f in faculty %}
           <option value='{{ f.userID }}'>{{ f.userFirstName }} {{f.userLastName}}</option>
@@ -17,7 +17,7 @@
       </select>
   
       <div class="clearfix">
-        <button type="submit" class="signupbtn">Submit</button>
+        <button type="submit">Submit</button>
       </div>
     </div>
   </form>

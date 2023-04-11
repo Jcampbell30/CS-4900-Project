@@ -2,16 +2,6 @@
 {% block content %}
 <div class="container text-center">
     <div class='badge bg-dark text-center'>
-        <h3>List of Staff</h3>
-        <ul>
-            {% for f in faculty %}
-                <li>
-                    <p class='text-light'>{{f.userFirstName}} {{f.userLastName}} | {{f.email}}</p>
-                </li>
-            {% endfor %}
-        </ul>
-    </div><br><br>
-    <div class='badge bg-dark text-center'>
         <form method='POST'>
             <label for='email_selection'>Select email to promote</label><br><br>
             <select name='email_selection'>
@@ -21,6 +11,27 @@
             </select><br>
             <button type="submit" class="submitbtn">Submit</button>
         </form>
+    </div><br><br>
+    <div class='badge bg-dark text-center'>
+        <form method='POST'>
+            <label for='demote'>Select email to demote</label><br><br>
+            <select name='demote'>
+                {% for f in faculty %}
+                    <option value='{{ f.userID }}'>{{ f.email }}</option>
+                {% endfor %}
+            </select><br>
+            <button type="submit" class="submitbtn">Submit</button>
+        </form>
+    </div><br><br>
+    <div class='badge bg-dark text-center'>
+        <h3>List of Staff</h3>
+        <ul>
+            {% for f in faculty %}
+                <li>
+                    <p class='text-light'>{{f.userFirstName}} {{f.userLastName}} | {{f.email}}</p>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 {% endblock %}

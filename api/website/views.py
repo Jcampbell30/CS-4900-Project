@@ -196,14 +196,17 @@ def permissions():
         return redirect(url_for('views.home'))
     
     if request.method=='POST':
-        new_faculty = Users.query.filter_by(email=request.form['email']).first()
+        new_faculty = Users.query.filter_by(userID=request.form['email_selection']).first()
+        print()
         new_faculty.role = 'f'
         db.session.commit()
         flash('New faculty added!', category='success')
 
     all_faculty = Users.query.filter_by(role='f').all()
 
-    return render_template('permissions.html', user=current_user, faculty=all_faculty)
+    valid_emails = Users.query.filter(Users.email.contains('@utc.edu')).all()
+    
+    return render_template('permissions.html', user=current_user, faculty=all_faculty, valid_emails=valid_emails)
 
 
 ##########################

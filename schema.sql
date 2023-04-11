@@ -74,3 +74,15 @@ CREATE TABLE studentAssignment(
   FOREIGN KEY (courseID) REFERENCES course(courseID),
   PRIMARY KEY (studentAssignmentID)
 );
+
+CREATE TABLE studentGrades(
+  gradeID INT NOT NULL AUTO_INCREMENT,
+  studentID INT,
+  targetID INT,
+  questionID INT,
+  grade INT,
+  FOREIGN KEY (studentID) REFERENCES users(userID),
+  FOREIGN KEY (targetID) REFERENCES users(userID),
+  FOREIGN KEY (questionID) REFERENCES question(questionID),
+  PRIMARY KEY (gradeID)
+);
