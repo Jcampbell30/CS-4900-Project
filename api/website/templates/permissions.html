@@ -1,20 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class='badge bg-dark text-center'>
-    <h3>List of Staff</h3>
-    <ul>
-        {% for f in faculty %}
-            <li>
-                <p class='text-light'>{{f.userFirstName}} {{f.userLastName}}</p>
-            </li>
-        {% endfor %}
-    </ul>
-</div>
-<div class='badge bg-dark text-center'>
-    <form>
-        <label for='email'>Enter User's Email</label>
-        <input type="text" placeholder="Enter Email" name="email" required>
-        <button type="submit" class="submitbtn">Submit</button>
-    </form>
+<div class="container text-center">
+    <div class='badge bg-dark text-center'>
+        <h3>List of Staff</h3>
+        <ul>
+            {% for f in faculty %}
+                <li>
+                    <p class='text-light'>{{f.userFirstName}} {{f.userLastName}} | {{f.email}}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div><br><br>
+    <div class='badge bg-dark text-center'>
+        <form method='POST'>
+            <label for='email_selection'>Select email to promote</label><br><br>
+            <select name='email_selection'>
+                {% for email in valid_emails %}
+                    <option value='{{ email.userID }}'>{{ email.email }}</option>
+                {% endfor %}
+            </select><br>
+            <button type="submit" class="submitbtn">Submit</button>
+        </form>
+    </div>
 </div>
 {% endblock %}
