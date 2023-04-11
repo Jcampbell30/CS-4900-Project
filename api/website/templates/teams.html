@@ -1,27 +1,48 @@
 {% extends 'base.html' %}
 {% block content %}
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
 <Style>
-  p1 {
+  p {
     color: black;
     font-weight: bold;
     background-color: gold;
   }
-</Style>
-<form method="POST" style="border:1px solid #ccc"></form>
+  select{
+    width: 50%;
+  }
+  label{
+    display: inline-block;
+  }
 
-  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+</Style>
+
+
+
+<form method="POST" style="border:1px solid #ccc" action = "/teams">
   <div class="container">
     <h1>UTC Peer Review</h1>
-
-    <p1>Enter the name of the team.</p1>
-    <input type="text" placeholder="Enter Team Name" name="teamName" required>
-
-    <!-- This should loop. Idk how to do this, I'm going to rip my hair out. -->
-    <p1>Add a team member's first and last name.</p1>
-    <input type="text" placeholder="Enter Member Name" name="teammate" required>
-    <button type="button" value="AddMember">Add Member</button>
-
-    <button type="submit" value="Submit">Submit</button>
+    <input type="text" placeholder="Enter Team Name" name="createTeam" required>
+    <button type="submit" value="Submit">Create Team</button>
   </div>
 </form> 
+
+<form method = "GET" style = "border:1px solid #ccc" action = "/teams">
+<div class = "container2">
+<label for="teamName">Choose a team</label>
+<SELECT name="teamID" style="font-family:verdana">
+{% for team in teams %}
+	<OPTION value={{team}}>{{team}}</OPTION>
+{% endfor %}
+</SELECT><br><br><br>
+<label for="studentName">Add a student</label>
+<SELECT name = "studentID" style = "font-family:verdana">
+{% for name in students %}
+	<OPTION value={{name}}>{{name}}</OPTION>
+{% endfor %}
+</SELECT><br><br><br>
+<button type="submit" value="add_member">Add Team Member</button>
+</div>
+</form>
+
+
 {% endblock %}
