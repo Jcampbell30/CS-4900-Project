@@ -41,8 +41,8 @@ class Template(db.Model):
 class Question(db.Model):
     __tablename__ = 'question'
     questionID = db.Column(db.Integer, primary_key=True)
-    questionDesc = db.Column(db.String(250)),
-    
+    questionDesc = db.Column(db.String(250))
+    templateID = db.Column(db.Integer, db.ForeignKey('template.templateID'))
 
 ##################
 # Relation table #
@@ -58,12 +58,6 @@ class TemplateAssignment(db.Model):
     templateAssignmentID = db.Column(db.Integer, primary_key=True)
     templateID = db.Column(db.Integer, db.ForeignKey('template.templateID'))
     teamID = db.Column(db.Integer, db.ForeignKey('team.teamID'))
-
-class QuestionAssignment(db.Model):
-    __tablename__ = 'questionAssignment'
-    questionAssignmentID = db.Column(db.Integer, primary_key=True)
-    templateID = db.Column(db.Integer, db.ForeignKey('template.templateID'))
-    questionID = db.Column(db.Integer, db.ForeignKey('question.questionID'))
 
 class StudentAssignment(db.Model):
     __tablename__ = 'studentAssignment'
