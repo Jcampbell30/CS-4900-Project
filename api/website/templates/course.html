@@ -1,16 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
     <h1>{{course.courseName}}</h1>
-    <div>
-        <h3>All Students Assigned</h3><br>
-        {% for student in students %}
-            <p>{{student.userFirstName}} {{student.userLastName}}</p><br>
-        {% endfor %}
-    </div>
-    <form method='POST'>
+    
+    <form method='POST' action="/course">
+        <input type="hidden" name="course_id" id="course_id" value="{{ course.courseID }}"/>
         <label for="student_id"><b>Student ID</b></label>
-        <input type="text" placeholder="AAA111" name="student_id" required>
-        <button type="submit" class="signupbtn">Assign Student</button>
+        <input type="text" placeholder="AAA111" name="student_id" id = "student_id" required/>
+        <button type="submit">Assign Student</button>
     </form>
+    <div class='badge bg-dark text-center'>
+        <h3>List of Students</h3>
+        <ul>
+            {% for student in students %}
+                <li>
+                    <p class='text-light'>{{student.userFirstName}} {{student.userLastName}} | {{student.email}}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 
 {% endblock %}

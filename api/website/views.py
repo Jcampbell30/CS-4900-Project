@@ -136,12 +136,37 @@ def course():
         return redirect(url_for('views.home'))
     
     if request.method=='POST':
-        if request.form['courseSelection']:
+        if 'courseSelection' in request.form:
             course_id = request.form['courseSelection']
-            course_selection = Course.query.filter_by(courseID = course_id).first()
-            course_students = StudentAssignment.query.filter_by(courseID = course_id).all()
+        else:
+            course_id = request.form['course_id']
+    
+        course_selection = Course.query.filter_by(courseID = course_id).first()
+        course_assignments = StudentAssignment.query.filter_by(courseID = course_id).all()
+        student_ids = []
+        for student in course_assignments:
+            student_ids.append(student.studentID)
+        course_students = Users.query.filter(Users.userID.in_(student_ids)).all()
 
-            return render_template('course.html', user=current_user, course=course_selection, students=course_students)
+        if 'student_id' in request.form:
+            utc_id = request.form['student_id'].lower()
+            student_email = f'{utc_id}@mocs.utc.edu'
+            student = Users.query.filter_by(email=student_email).first()
+            if student in course_students:
+                flash('Student already in class!', category='error')
+            else:
+                sa = StudentAssignment(
+                    studentID = student.userID,
+                    courseID = course_id
+                )
+                db.session.add(sa)
+                db.session.commit()
+                flash('Student successfully added!', category='success')
+
+        return render_template('course.html', user=current_user, course=course_selection, students=course_students)
+
+    flash('Must select a course from admin page!', category='error')
+    return redirect(url_for('views.admin'))
 
 
 @views.route('/create-course', methods=['GET', 'POST'])

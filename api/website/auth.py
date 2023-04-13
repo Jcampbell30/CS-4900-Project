@@ -30,7 +30,7 @@ def sign_up():
     if request.method=='POST':
         firstName = request.form.get('firstName')
         lastName = request.form.get('lastName')
-        email = request.form.get('email')
+        email = request.form.get('email').lower()
         print(email)
         psw1 = request.form.get('psw')
         psw2 = request.form.get('psw-repeat')
