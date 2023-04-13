@@ -7,9 +7,7 @@ form {
     min-height: 100vh;
   }
   body{
-      background-image: url(ZOOM_BIRD_HEAD_on_BLUE.png);
-       width: 100%;
-       height: auto;
+      background-color: #00386b;
   }
   label{
       color: gold;
