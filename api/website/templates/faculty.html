@@ -9,13 +9,17 @@
     -->
     <span style='display: inline-block;'>
     
-    <form action='/templates'><button style='width: 200px; margin-right: 100px;' type='submit'>Create New Template</button></form>
+    <form action='/templates'><button style='width: 200px; margin-right: auto;' type='submit'>Create New Template</button></form>
     
-    <form action='/teams'><button style='width: 200px; margin-right: 100px;' type='submit'>Create New Team</button></form><br><br>
+    <form action='/teams'><button style='width: 200px; margin-right: auto;' type='submit'>Create New Team</button></form>
     
-    <div class='badge bg-dark text-center'>
+    <br>
+    
+    <div class='badge bg-dark text-center;' style='width: 200px; margin-right: auto;'>
       <form method='POST' action='/questions'>
           <label for='templateSelection'><b>Select A Template</b></label>
+          <br>
+          <br>
           <select name='templateSelection'>
               {% for template in templates %}
                   <option value='{{ template.templateID }}'>{{ template.templateName }}</option>
@@ -26,8 +30,10 @@
           </div>
       </form>
   </div>
+  <br>
+  <br>
 
-    <select id='rubric-select' style='width: 200px; margin-right: 100px;'>
+    <select id='rubric-select' style='width: 200px; margin-right: auto; text-align: center;'>
       <option value=''>--Delete a Template--</option>
       <option value='rubric-1'>Template 1</option>
       <option value='rubric-2'>Rubric 2</option>
@@ -36,7 +42,7 @@
       <option value='rubric-5'>Rubric 5</option>
     </select>
 
-    <select id='rubric-select' style='width: 200px; margin-right: 100px;'>
+    <select id='rubric-select' style='width: 200px; margin-right: auto; text-align: center;'>
       <option value=''>--Delete a Team--</option>
       <option value='rubric-1'>Rubric 1</option>
       <option value='rubric-2'>Rubric 2</option>
