@@ -1,0 +1,32 @@
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
+  }
+  body{
+      background-color: #00386b;
+  }
+  label{
+      color: gold;
+      font-size: medium;
+      font-weight: bolder;
+  }
+  button {
+      background-color: #04AA6D;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      cursor: pointer;
+      width: 70%;
+      opacity: 0.9;
+    }
+    button:hover {
+      opacity: 1;
+    }
+    h1{
+      color: gold;
+    }

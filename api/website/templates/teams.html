@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+<Style>
+  p {
+    color: black;
+    font-weight: bold;
+    background-color: gold;
+  }
+  select{
+    width: 50%;
+  }
+  label{
+    display: inline-block;
+  }
+  header{
+   font-size: xx-large;
+   color:gold;
+    font-weight: bold; 
+  }
+
+</Style>
+
+
+
+
+<!--      
+  A form to create a new team
+-->
+<form method="POST" style="border:1px solid #ccc" action = "/teams">
+  <div>
+    <header>Create Team</header>
+    <label for="course">Choose a course</label><br><br>
+    <SELECT name="courseID" style="font-family:verdana">
+    {% for course in courses %}
+      <OPTION value={{course.courseID}}>{{course.courseName}}</OPTION>
+    {% endfor %}
+  </div>
+  <br><br>
+  <div class="container">
+
+    <input type="text" placeholder="Enter Team Name" name="createTeam" required>
+    <button type="submit" value="Submit">Create Team</button>
+  </div>
+</form> 
+
+<form method = "GET" style = "border:1px solid #ccc" action = "/teams">
+<div class = "container2">
+<label for="teamName">Choose a team</label>
+<SELECT name="teamID" style="font-family:verdana">
+{% for team in teams %}
+	<OPTION value={{team.teamID}}>{{team.teamName}}</OPTION>
+{% endfor %}
+</SELECT><br><br><br>
+<label for="studentName">Add a student</label>
+<SELECT name = "studentID" style = "font-family:verdana">
+{% for name in students %}
+	<OPTION value={{name.userID}}>{{name.userFirstName}} {{name.userLastName}}</OPTION>
+{% endfor %}
+</SELECT><br><br><br>
+<button type="submit" value="add_member">Add Team Member</button>
+</div>
+</form>
+
+
+{% endblock %}

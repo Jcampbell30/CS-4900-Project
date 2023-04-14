@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{{course.courseName}}</h1>
+    
+    <form method='POST' action="{{ url_for('views.course', id=course.courseID)}}">
+        <label for="student_id"><b>Student ID</b></label>
+        <input type="text" placeholder="AAA111" name="student_id" id = "student_id" required/>
+        <button type="submit">Assign Student</button>
+    </form>
+    <div class='badge bg-dark text-center'>
+        <h3>List of Students</h3>
+        <ul>
+            {% for student in students %}
+                <li>
+                    <p class='text-light'>{{student.userFirstName}} {{student.userLastName}} | {{student.email}} | <a href='{{ url_for("views.remove_student", course_id=course.courseID, user_id=student.userID)}}'>Remove</a></p>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

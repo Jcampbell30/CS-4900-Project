@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="POST" style="border:1px solid #ccc">
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+  <div class="container">
+    <h1>UTC Peer Review</h1>
+    <h2>Login</h2>
+    <hr>
+
+    <label for="email"><b>Email</b></label>
+    <input type="text" placeholder="Enter Email" name="email" required>
+
+    <label for="psw"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="psw" required>
+
+    <label>
+      <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
+    </label>
+
+    <p>Need to make an account? <a href="sign-up" style="color:dodgerblue">Sign up</a></p>
+    <p>Forgot Password? <a href="#" style="color:dodgerblue">Click here :C</a></p>
+
+    <div class="clearfix">
+      <button type="button" class="cancelbtn">Cancel</button>
+      <button type="submit" class="signupbtn">Login</button>
+    </div>
+  </div>
+</form> 
+{% endblock %}

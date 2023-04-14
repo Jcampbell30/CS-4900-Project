@@ -1,0 +1,122 @@
+* {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #00386b;
+  }
+  
+  h1 {
+    color: gold;
+    font-style: bold;
+    text-shadow: 2px 2px black;
+  }
+  h2{
+    color: gold;
+    background-color: navy;
+  }
+
+  h3{
+    color: gold;
+  }
+
+  label{
+    color:gold;
+  }
+  p{
+    color: gold;
+    font-style: bold;
+  }
+  /* Full-width input fields */
+  input[type=text], input[type=password] {
+    width: 50%;
+    padding: 12px;
+    margin: 0 auto;
+    display: block;
+    border: none;
+    background: #f1f1f1;
+  }
+  
+  input[type=text]:focus, input[type=password]:focus {
+    background-color: #ddd;
+    outline: none;
+  }
+  
+  hr {
+    border: 1px cadetblue;
+    margin-bottom: 25px;
+  }
+  
+  /* Set a style for all buttons */
+  button {
+    background-color: #04AA6D;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+  }
+  
+  button:hover {
+    opacity: 1;
+  }
+  
+  /* Extra styles for the cancel button */
+  .cancelbtn {
+    padding: 14px 20px;
+    background-color: #f44336;
+  }
+  
+  /* Float cancel and signup buttons and add an equal width */
+  .cancelbtn, .signupbtn {
+    text-align: center;
+  }
+  
+  /* Add padding to container elements */
+  .container {
+    padding: 16px;
+    border: none;
+    margin: 0;
+  }
+  
+  /* Clear floats */
+  .clearfix::after {
+    content: '';
+    clear: both;
+    display: table;
+  }
+
+  /* Table Headings */
+  th {
+    background-color: #eab012;
+  }
+
+  /* Table Data */
+  td {
+    background-color: grey;
+    font-weight: bold;
+  }
+
+  .nav-user-name {
+    margin-top: 8px;
+    margin-bottom: 2px;
+    margin-right: 3px;
+    margin-left: 3px;
+  }
+
+  .custom-alert {
+    margin: 8px;
+  }
+
+  .custom-alert-text {
+    align-content: center;
+  }
+  
+  /* Change styles for cancel button and signup button on extra small screens */
+  @media screen and (max-width: 300px) {
+    .cancelbtn, .signupbtn {
+      width: 100%;
+    }
+  }
