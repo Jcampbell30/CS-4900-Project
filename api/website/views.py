@@ -175,6 +175,20 @@ def course():
     flash('Must select a course from admin page!', category='error')
     return redirect(url_for('views.admin'))
 
+@views.route('/remove-student', methods=['POST'])
+@login_required
+def remove_student():
+    if current_user.role != 'a':
+        flash('Must be a site admin to access this page.', category='error')
+        return redirect(url_for('views.home'))
+
+    if request.method == 'POST':
+        if 'remove-student' in request.form:
+            
+            return redirect(url_for('views.admin'))
+        else:
+            flash('No student ID', category='error')
+    return redirect(url_for('views.admin'))
 
 @views.route('/create-course', methods=['GET', 'POST'])
 @login_required
@@ -203,7 +217,7 @@ def create_course():
 
     return render_template('create-course.html', user=current_user, faculty=all_faculty)
 
-@views.route('/permissions')
+@views.route('/permissions', methods=['GET', 'POST'])
 @login_required
 def permissions():
     if current_user.role != 'a':
@@ -218,9 +232,9 @@ def permissions():
         flash('New faculty added!', category='success')
 
     all_faculty = Users.query.filter_by(role='f').all()
-
     valid_emails = Users.query.filter(Users.email.contains('@utc.edu')).all()
-    
+    valid_emails.remove(current_user)
+
     return render_template('permissions.html', user=current_user, faculty=all_faculty, valid_emails=valid_emails)
 
 
