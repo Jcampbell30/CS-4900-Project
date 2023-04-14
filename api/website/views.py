@@ -156,7 +156,7 @@ def teams(course_id):
             try:
                 team_id = request.form['teamID']
                 print(f"team_id = {team_id}")
-                already_assigned = TeamAssignment.query.filter_by(team_id=team_id).filter_by(userID=request.form['studentID']).first()
+                already_assigned = TeamAssignment.query.filter_by(teamID=team_id).filter_by(userID=request.form['studentID']).first()
                 print (already_assigned)
                 if already_assigned:
                     flash('Student already assigned to this team!', category='error')
@@ -169,13 +169,13 @@ def teams(course_id):
                 print(e)
     
     print(current_user.userID)
-    courses = Course.query.filter_by(teacherID=current_user.userID).all()
-    print(courses)
-    students = Users.query.filter_by(role='s').all()
+    assigned_ids = StudentAssignment.query.filter_by(courseID=course_id)
+
+    all_students = Users.query.filter_by(role='s').all()
     
     teams=Team.query.filter_by(courseID=course.courseID).all()
     print(teams)
-    return render_template('teams.html', user=current_user, course=course, courses=courses, students=students, teams=teams)
+    return render_template('teams.html', user=current_user, course=course, students=all_students, teams=teams)
 
 # Individual team page
 @views.route('/team/<int:id>', methods=['GET', 'POST'])
@@ -280,7 +280,8 @@ def create_course():
             db.session.commit()
             flash('Course created successfully!', category='success')
     
-    all_faculty = Users.query.filter_by(role='f').all()
+
+    all_faculty = Users.query.filter(Users.role.in_(['f', 'a'])).all()
 
     return render_template('create-course.html', user=current_user, faculty=all_faculty)
 
