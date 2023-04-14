@@ -13,7 +13,12 @@
         <ul>
             {% for student in students %}
                 <li>
-                    <p class='text-light'>{{student.userFirstName}} {{student.userLastName}} | {{student.email}}</p>
+                    <p class='text-light'>{{student.userFirstName}} {{student.userLastName}} | {{student.email}} |</p>
+                    <form method="POST">
+                        <input type="hidden" name="course_id" id="course_id" value="{{ course.courseID }}"/>
+                        <input type="hidden" name="student_id" id="student_id" value="{{ student.userID }}"/>
+                        <button type="submit">Remove</button>
+                    </form>
                 </li>
             {% endfor %}
         </ul>
