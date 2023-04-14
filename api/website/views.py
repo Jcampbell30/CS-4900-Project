@@ -47,8 +47,13 @@ def faculty():
         return redirect(url_for('views.home'))
 
     my_templates = Template.query.filter_by(teacherID=current_user.userID).all()
-    
-    return render_template('faculty.html', user=current_user,templates=my_templates)
+    my_courses =  Course.query.filter_by(teacherID=current_user.userID).all()
+
+    if request.method == 'POST':
+        if 'course_selection' in request.form:
+            return redirect(url_for('views.teams', course_id=request.form['course_selection']))
+
+    return render_template('faculty.html', user=current_user,templates=my_templates,courses=my_courses)
 
 @views.route('/templates', methods=['GET', 'POST'])
 @login_required
@@ -125,7 +130,7 @@ def questions():
         
     return redirect(url_for('views.faculty'))
 
-
+# Team Management Page
 @views.route('/teams/<int:course_id>', methods=['GET', 'POST'])
 @login_required
 def teams(course_id):
@@ -141,30 +146,42 @@ def teams(course_id):
     
 
     if request.method == 'POST':
-        teamName = request.form['createTeam']
-        team = Team(teamName=teamName, courseID=course.courseID)
-        db.session.add(team)
-        db.session.commit()
-        flash(f'The {teamName} team was created successfully.', category='success')
-        return redirect(url_for('views.faculty'))
-    
-    if request.method == 'GET':
-        team_id = request.args.get('team')
-        print(f"team_id = {team_id}")
-        team = TeamAssignment(teamID=team_id, userID=current_user.userID)
+        if 'createTeam' in request.form:
+            teamName = request.form['createTeam']
+            team = Team(teamName=teamName, courseID=course.courseID)
+            db.session.add(team)
+            db.session.commit()
+            flash(f'The {teamName} team was created successfully.', category='success')
+        elif 'teamID' in request.form:
+            try:
+                team_id = request.form['teamID']
+                print(f"team_id = {team_id}")
+                already_assigned = TeamAssignment.query.filter_by(team_id=team_id).filter_by(userID=request.form['studentID']).first()
+                print (already_assigned)
+                if already_assigned:
+                    flash('Student already assigned to this team!', category='error')
+                else:
+                    team = TeamAssignment(teamID=team_id, userID=request.form['studentID'])
+                    db.session.add(team)
+                    db.session.commit()
+                    flash('Student assigned to team!', category='success')
+            except Exception as e:
+                print(e)
     
     print(current_user.userID)
     courses = Course.query.filter_by(teacherID=current_user.userID).all()
     print(courses)
     students = Users.query.filter_by(role='s').all()
-    course_ids=[]
-    for course in courses:
-        print(course.courseID)
-        course_ids.append(course.courseID)
     
-    teams=Team.query.filter(Team.courseID.in_(course_ids)).all()
+    teams=Team.query.filter_by(courseID=course.courseID).all()
     print(teams)
-    return render_template('teams.html', user=current_user, courses=courses, students=students, teams=teams)
+    return render_template('teams.html', user=current_user, course=course, courses=courses, students=students, teams=teams)
+
+# Individual team page
+@views.route('/team/<int:id>', methods=['GET', 'POST'])
+@login_required
+def team(id):
+    pass
 
 ################
 # ADMIN VIEWS  #

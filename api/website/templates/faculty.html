@@ -7,30 +7,42 @@
       <button style='width: 200px; margin-right: 100px;' class='view-rubric-button' onclick='window.location.href="https://example.com/rubric-1";'>View Template 2</button>
       <button style='width: 200px; margin-right: 100px;' class='view-rubric-button' onclick='window.location.href="https://example.com/rubric-1";'>View Team 2</button><br><br>
     -->
-    <h1>Faculty Page</h1>
-    <span style='display: inline-block;'>
-    
-    <form action='/templates'><button style='width: 200px; margin-right: auto;' type='submit'>Create New Template</button></form>
-    
-    <form action='/teams'><button style='width: 200px; margin-right: auto;' type='submit'>Create New Team</button></form>
-    
-    <br>
+<h1>Faculty Page</h1>
+<span style='display: inline-block;'>
+
     <div class='badge bg-dark text-center;' style='width: auto; margin-right: auto;'>
-      <form method='POST' action='/questions'>
-          <label for='templateSelection' style="font-size: 20px;"><b>Select a Template</b></label>
-          <br>
-          <br>
-          <select name='templateSelection'>
-              {% for template in templates %}
-                  <option value='{{ template.templateID }}'>{{ template.templateName }}</option>
-              {% endfor %}
-          </select>
-          <div class='clearfix'>
-              <button type="submit" class="signupbtn">Submit</button>
-          </div>
-      </form>
-  </div>
-    </span>
+        <h3>Team Management</h3>
+        <form method='POST'>
+            <label for='course_select' style="font-size: 20px;"><b>Select a Course</b></label>
+            <br>
+            <br>
+             <select name='course_selection'>
+                {% for course in courses %}
+                    <option value='{{ course.courseID }}'>{{ course.courseName }}</option>
+                {% endfor %}
+            </select>
+            <div class='clearfix'>
+                <button type="submit" class="signupbtn">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class='badge bg-dark text-center;' style='width: auto; margin-right: auto;'>
+        <form action='/templates'><button style='width: 200px; margin-right: auto;' type='submit'>Create New Template</button></form>
+        <form method='POST' action='/questions'>
+            <label for='templateSelection' style="font-size: 20px;"><b>Select a Template</b></label>
+            <br>
+            <br>
+             <select name='templateSelection'>
+                {% for template in templates %}
+                    <option value='{{ template.templateID }}'>{{ template.templateName }}</option>
+                {% endfor %}
+            </select>
+            <div class='clearfix'>
+                <button type="submit" class="signupbtn">Submit</button>
+            </div>
+        </form>
+    </div>
+</span>
     
      
 
