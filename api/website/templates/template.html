@@ -3,27 +3,28 @@
 {% block content %}
 
  <form action="/templates" method="post">
-<link href="{{ url_for('static',filename='styles/field_style.css') }}" rel="stylesheet">
-<h1>Templates</h1>
+<h1>Create a Template</h1>
 
 <p>
-<label for="rubric_name" id="rubric_name" required>Templates</label>
-<input type="text" id="rubric_name" name="rubric_name">
-<label for="date-time" id="date-time" required >Due Date</label>
-<input type="datetime-local" name="date-time"><br>
-
- <label for="grading_scale" id="grading_scale">Grading Scale:</label>
+<label for="rubric_name" id="rubric_name" required>Enter the name of the Template:</label>
+<input type="text" id="rubric_name" name="rubric_name" style='width: 400px; margin-right: auto; text-align: center;'>
+<br>
+<label for="date-time" id="date-time" required >Enter the Due Date:</label>
+<input type="datetime-local" name="date-time">
+<br>
+<br>
+ <label for="grading_scale" id="grading_scale">Enter the Grading Scale:</label>
         <input type="number" id="grading_scale" name="grading_scale">
     </p>
     <p>
-        <label for="num_questions" input type="number" step="1" pattern="\d+">Number of Questions:</label>
+        <label for="num_questions" input type="number" step="1" pattern="\d+">Enter the Number of Questions:</label>
         <input type="number" id="num_questions" name="num_questions">
     </p>
     
     
   
 
-<button type="submit" value="submit_rubric">Submit</button>
+<button type="submit" value="submit_rubric" style = "width: 200px">Submit</button>
 </p>
 
 
