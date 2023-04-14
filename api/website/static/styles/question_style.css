@@ -4,7 +4,7 @@ form {
     justify-content: center;
     align-items: center;
     text-align: center;
-    min-height: 100vh;
+    min-height: auto;
   }
   body{
       background-color: #00386b;
@@ -40,7 +40,7 @@ form {
       justify-content: center;
       align-items: center;
       text-align: center;
-      min-height: 100vh;
+      min-height: auto;
       border: "1px solid black";
       border-collapse: collapse;
       width: 100%;
