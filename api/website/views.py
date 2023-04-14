@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from .models import Users, Template, Course, StudentAssignment, TemplateAssignment, Question
+from .models import Users, Template, Course, StudentAssignment, TemplateAssignment, Question, TeamAssignment, Team
 from . import db
 from datetime import datetime
 
@@ -118,7 +118,42 @@ def questions():
 @views.route('/teams', methods=['GET', 'POST'])
 @login_required
 def teams():
-    return render_template('teams.html', user=current_user)
+    if current_user.role == 's':
+        flash('Must be a member of faculty or a site admin to access this page.', category='error')
+        return redirect(url_for('views.home'))
+    my_courses = Course.query.filter_by(teacherID=current_user.userID).all()
+    my_list = []
+    if len(my_courses) > 0:
+        for i in range(len(my_courses)):
+            my_list.append(my_courses[i].courseName)
+        students = Users.query.filter_by(role='s').all()
+        student_list = []
+        for i in range(len(students)):
+            x,y = students[i].userFirstName, students[i].userLastName
+            student_name = x + " " + y
+            student_list.append(student_name)
+       
+        list_team_names = Team.query.with_entities(Team.teamName,Team.courseID).all()
+        list_team_courses = Team.query.with_entities(Team.courseID).all()
+        teams = [team_name[0] for team_name in list_team_names]
+        courses = [course[0] for course in list_team_courses]
+        my_teams = []
+        for t in range(len(teams)):
+            my_teams.append(teams[t])
+        return render_template('teams.html', user=current_user, courses = my_list, students = student_list, teams = my_teams)
+
+    if request.method == 'POST':
+        teamName = request.form['createTeam']
+        team = Team(teamName=teamName, courseID=1)
+        db.session.add(team)
+        db.session.commit()
+        flash(f'The {teamName} team was created successfully.', category='success')
+        return redirect(url_for('veiws.faculty'))
+    if request.method == 'GET':
+        team_id = request.args.get('team')
+        print(f"team_id = {team_id}")
+        team = TeamAssignment(teamID=team_id, userID=current_user.userID)
+    return render_template('teams.html', user=current_user, team = team)
 
 ################
 # ADMIN VIEWS  #
@@ -131,9 +166,9 @@ def admin():
         flash('Must be a site admin to access this page.', category='error')
         return redirect(url_for('views.home'))
 
-    all_courses = Course.query.all()
+    all_my_courses = Course.query.all()
 
-    return render_template('admin.html', user=current_user, courses=all_courses)
+    return render_template('admin.html', user=current_user, my_courses=all_my_courses)
 
 @views.route('/course', methods=['GET', 'POST'])
 @login_required
@@ -143,8 +178,8 @@ def course():
         return redirect(url_for('views.home'))
     
     if request.method=='POST':
-        if 'courseSelection' in request.form:
-            course_id = request.form['courseSelection']
+        if 'my_courseselection' in request.form:
+            course_id = request.form['my_courseselection']
         else:
             course_id = request.form['course_id']
     
