@@ -33,7 +33,7 @@
     <label for="course">Choose a course</label><br><br>
     <SELECT name="courseID" style="font-family:verdana">
     {% for course in courses %}
-      <OPTION value={{course}}>{{course}}</OPTION>
+      <OPTION value={{course.courseID}}>{{course.courseName}}</OPTION>
     {% endfor %}
   </div>
   <br><br>
@@ -49,13 +49,13 @@
 <label for="teamName">Choose a team</label>
 <SELECT name="teamID" style="font-family:verdana">
 {% for team in teams %}
-	<OPTION value={{team}}>{{team}}</OPTION>
+	<OPTION value={{team.teamID}}>{{team.teamName}}</OPTION>
 {% endfor %}
 </SELECT><br><br><br>
 <label for="studentName">Add a student</label>
 <SELECT name = "studentID" style = "font-family:verdana">
 {% for name in students %}
-	<OPTION value={{name}}>{{name}}</OPTION>
+	<OPTION value={{name.userID}}>{{name.userFirstName}} {{name.userLastName}}</OPTION>
 {% endfor %}
 </SELECT><br><br><br>
 <button type="submit" value="add_member">Add Team Member</button>

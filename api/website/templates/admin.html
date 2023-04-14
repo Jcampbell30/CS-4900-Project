@@ -6,16 +6,9 @@
     </div><br>
     
     <div class='badge bg-dark text-center'>
-        <form method='POST' action='/course'>
-            <label for='courseSelection'><b>Select A Course</b></label>
-            <select name='courseSelection'>
-                {% for course in courses %}
-                    <option value='{{ course.courseID }}'>{{ course.courseName }}</option>
-                {% endfor %}
-            </select>
-            <div class='clearfix'>
-                <button type="submit" class="signupbtn">Submit</button>
-            </div>
-        </form>
+        <h3>All Courses</h3><br>
+        {% for course in my_courses %}
+            <p class="text-light">{{course.courseName}} | <a href="{{ url_for('views.course', id=course.courseID)}}">Select</a></p>
+        {% endfor %}
     </div>
 {% endblock %}

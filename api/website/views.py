@@ -24,6 +24,17 @@ def home():
 def assignments():
     return render_template('assignments.html', user=current_user)
 
+@views.route('/peer-review/<int:id>', methods=['GET', 'POST'])
+@login_required
+def peer_review(id):
+    if current_user.role == 's':
+        flash('Must be a student to access peer reviews!', category='error')
+        return redirect(url_for('views.home'))
+
+    template = Template.query.get_or_404(id)
+    course = Course.query.filter_by()
+
+
 #################
 # FACULTY VIEWS #
 #################
@@ -115,45 +126,45 @@ def questions():
     return redirect(url_for('views.faculty'))
 
 
-@views.route('/teams', methods=['GET', 'POST'])
+@views.route('/teams/<int:course_id>', methods=['GET', 'POST'])
 @login_required
-def teams():
+def teams(course_id):
     if current_user.role == 's':
         flash('Must be a member of faculty or a site admin to access this page.', category='error')
         return redirect(url_for('views.home'))
-    my_courses = Course.query.filter_by(teacherID=current_user.userID).all()
-    my_list = []
-    if len(my_courses) > 0:
-        for i in range(len(my_courses)):
-            my_list.append(my_courses[i].courseName)
-        students = Users.query.filter_by(role='s').all()
-        student_list = []
-        for i in range(len(students)):
-            x,y = students[i].userFirstName, students[i].userLastName
-            student_name = x + " " + y
-            student_list.append(student_name)
-       
-        list_team_names = Team.query.with_entities(Team.teamName,Team.courseID).all()
-        list_team_courses = Team.query.with_entities(Team.courseID).all()
-        teams = [team_name[0] for team_name in list_team_names]
-        courses = [course[0] for course in list_team_courses]
-        my_teams = []
-        for t in range(len(teams)):
-            my_teams.append(teams[t])
-        return render_template('teams.html', user=current_user, courses = my_list, students = student_list, teams = my_teams)
+    
+    course = Course.query.get_or_404(course_id)
+
+    if course.teacherID != current_user.userID:
+        flash('You do not have permission to view this course!', category='error')
+        return redirect(url_for('views.faculty'))
+    
 
     if request.method == 'POST':
         teamName = request.form['createTeam']
-        team = Team(teamName=teamName, courseID=1)
+        team = Team(teamName=teamName, courseID=course.courseID)
         db.session.add(team)
         db.session.commit()
         flash(f'The {teamName} team was created successfully.', category='success')
-        return redirect(url_for('veiws.faculty'))
+        return redirect(url_for('views.faculty'))
+    
     if request.method == 'GET':
         team_id = request.args.get('team')
         print(f"team_id = {team_id}")
         team = TeamAssignment(teamID=team_id, userID=current_user.userID)
-    return render_template('teams.html', user=current_user, team = team)
+    
+    print(current_user.userID)
+    courses = Course.query.filter_by(teacherID=current_user.userID).all()
+    print(courses)
+    students = Users.query.filter_by(role='s').all()
+    course_ids=[]
+    for course in courses:
+        print(course.courseID)
+        course_ids.append(course.courseID)
+    
+    teams=Team.query.filter(Team.courseID.in_(course_ids)).all()
+    print(teams)
+    return render_template('teams.html', user=current_user, courses=courses, students=students, teams=teams)
 
 ################
 # ADMIN VIEWS  #
@@ -170,26 +181,22 @@ def admin():
 
     return render_template('admin.html', user=current_user, my_courses=all_my_courses)
 
-@views.route('/course', methods=['GET', 'POST'])
+@views.route('/course/<int:id>', methods=['GET', 'POST'])
 @login_required
-def course():
+def course(id):
     if current_user.role != 'a':
         flash('Must be a site admin to access this page.', category='error')
         return redirect(url_for('views.home'))
     
-    if request.method=='POST':
-        if 'my_courseselection' in request.form:
-            course_id = request.form['my_courseselection']
-        else:
-            course_id = request.form['course_id']
-    
-        course_selection = Course.query.filter_by(courseID = course_id).first()
-        course_assignments = StudentAssignment.query.filter_by(courseID = course_id).all()
-        student_ids = []
-        for student in course_assignments:
-            student_ids.append(student.studentID)
-        course_students = Users.query.filter(Users.userID.in_(student_ids)).all()
+    course=Course.query.get_or_404(id)
 
+    course_assignments = StudentAssignment.query.filter_by(courseID = id).all()
+    student_ids = []
+    for student in course_assignments:
+        student_ids.append(student.studentID)
+    course_students = Users.query.filter(Users.userID.in_(student_ids)).all()
+
+    if request.method == 'POST':
         if 'student_id' in request.form:
             utc_id = request.form['student_id'].lower()
             student_email = f'{utc_id}@mocs.utc.edu'
@@ -199,31 +206,39 @@ def course():
             else:
                 sa = StudentAssignment(
                     studentID = student.userID,
-                    courseID = course_id
+                    courseID = course.courseID
                 )
                 db.session.add(sa)
                 db.session.commit()
                 flash('Student successfully added!', category='success')
+        
+    return render_template('course.html', user=current_user, course=course, students=course_students)
 
-        return render_template('course.html', user=current_user, course=course_selection, students=course_students)
-
-    flash('Must select a course from admin page!', category='error')
-    return redirect(url_for('views.admin'))
-
-@views.route('/remove-student', methods=['POST'])
+@views.route('/remove-student/<int:course_id>/<int:user_id>', methods=['GET', 'POST'])
 @login_required
-def remove_student():
+def remove_student(course_id, user_id):
     if current_user.role != 'a':
         flash('Must be a site admin to access this page.', category='error')
         return redirect(url_for('views.home'))
+    
+    try:
+        course=Course.query.filter_by(courseID=course_id).first()
+    except:
+        flash('Invalid course!', category='error')
+        return redirect(url_for('views.admin'))
 
-    if request.method == 'POST':
-        if 'remove-student' in request.form:
-            
-            return redirect(url_for('views.admin'))
-        else:
-            flash('No student ID', category='error')
-    return redirect(url_for('views.admin'))
+    try:
+        sa_to_remove = StudentAssignment.query.filter_by(studentID=user_id).filter_by(courseID=course_id).first()
+        print(sa_to_remove.studentID)
+        db.session.delete(sa_to_remove)
+        db.session.commit()
+        flash('Student unassigned to course!', category='success')
+    except Exception as ex:
+        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+        message = template.format(type(ex).__name__, ex.args)
+        print(message)
+        flash('Student not assigned to course!', category='error')
+    return redirect(url_for('views.course', id=course.courseID))
 
 @views.route('/create-course', methods=['GET', 'POST'])
 @login_required
@@ -275,6 +290,8 @@ def permissions():
     all_faculty = Users.query.filter_by(role='f').all()
     valid_emails = Users.query.filter(Users.email.contains('@utc.edu')).all()
     valid_emails.remove(current_user)
+    for f in all_faculty:
+        valid_emails.remove(f)
 
     return render_template('permissions.html', user=current_user, faculty=all_faculty, valid_emails=valid_emails)
 

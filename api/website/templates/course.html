@@ -2,8 +2,7 @@
 {% block content %}
     <h1>{{course.courseName}}</h1>
     
-    <form method='POST' action="/course">
-        <input type="hidden" name="course_id" id="course_id" value="{{ course.courseID }}"/>
+    <form method='POST' action="{{ url_for('views.course', id=course.courseID)}}">
         <label for="student_id"><b>Student ID</b></label>
         <input type="text" placeholder="AAA111" name="student_id" id = "student_id" required/>
         <button type="submit">Assign Student</button>
@@ -13,12 +12,7 @@
         <ul>
             {% for student in students %}
                 <li>
-                    <p class='text-light'>{{student.userFirstName}} {{student.userLastName}} | {{student.email}} |</p>
-                    <form method="POST">
-                        <input type="hidden" name="course_id" id="course_id" value="{{ course.courseID }}"/>
-                        <input type="hidden" name="student_id" id="student_id" value="{{ student.userID }}"/>
-                        <button type="submit">Remove</button>
-                    </form>
+                    <p class='text-light'>{{student.userFirstName}} {{student.userLastName}} | {{student.email}} | <a href='{{ url_for("views.remove_student", course_id=course.courseID, user_id=student.userID)}}'>Remove</a></p>
                 </li>
             {% endfor %}
         </ul>
