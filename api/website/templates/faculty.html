@@ -45,14 +45,17 @@
     <div class='badge bg-dark text-center;' style='width: auto; margin-right: auto;'>
         <h3>Template Management</h3>
         <form method='POST'>
-            <label for='course_select' style="font-size: 20px;"><b>Select a Template</b></label>
+            <label for='template_selection' style="font-size: 20px;"><b>Select a Template</b></label>
             <br>
             <br>
              <select name='template_selection'>
                 {% for template in templates %}
                     <option value='{{ template.templateID }}'>{{ template.templateName }}</option>
                 {% endfor %}
-            </select>
+            </select><br>
+            <label for='course_selection' style="font-size: 20px;"><b>Select a Course</b></label>
+            <br>
+            <br>
             <select name='course_selection'>
                 {% for course in courses %}
                     <option value='{{ course.courseID }}'>{{ course.courseName }}</option>

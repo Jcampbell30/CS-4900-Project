@@ -54,6 +54,11 @@ def faculty():
             template = Template.query.get_or_404(request.form['template_selection'])
             course = Course.query.get_or_404(request.form['course_selection'])
             temp_assign = TemplateAssignment(templateID=template.templateID, courseID=course.courseID)
+            db.session.add(temp_assign)
+            db.session.commit()
+            flash('Template assigned to course!', category='success')
+        else:
+            return redirect(url_for('views.teams', course_id=request.form['course_selection']))
         
 
     return render_template('faculty.html', user=current_user,templates=my_templates,courses=my_courses)

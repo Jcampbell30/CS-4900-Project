@@ -60,7 +60,8 @@ CREATE TABLE templateAssignment (
   templateAssignmentID INT NOT NULL AUTO_INCREMENT,
   templateID INT,
   courseID INT,
-  FOREIGN KEY (templateID) REFERENCES team(teamID),
+  FOREIGN KEY (templateID) REFERENCES template(templateID),
+  FOREIGN KEY (courseID) REFERENCES course(courseID),
   PRIMARY KEY (templateAssignmentID)
 );
 
