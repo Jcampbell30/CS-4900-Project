@@ -153,20 +153,7 @@ def teams(course_id):
             db.session.commit()
             flash(f'The {teamName} team was created successfully.', category='success')
         elif 'teamID' in request.form:
-            try:
-                team_id = request.form['teamID']
-                print(f"team_id = {team_id}")
-                already_assigned = TeamAssignment.query.filter_by(teamID=team_id).filter_by(userID=request.form['studentID']).first()
-                print (already_assigned)
-                if already_assigned:
-                    flash('Student already assigned to this team!', category='error')
-                else:
-                    team = TeamAssignment(teamID=team_id, userID=request.form['studentID'])
-                    db.session.add(team)
-                    db.session.commit()
-                    flash('Student assigned to team!', category='success')
-            except Exception as e:
-                print(e)
+            return redirect(url_for('views.team', course_id=course_id, team_id=request.form['teamID']))
     
     print(current_user.userID)
     assigned_ids = StudentAssignment.query.filter_by(courseID=course_id)
@@ -178,11 +165,53 @@ def teams(course_id):
     return render_template('teams.html', user=current_user, course=course, students=all_students, teams=teams)
 
 # Individual team page
-@views.route('/team/<int:id>', methods=['GET', 'POST'])
+@views.route('/teams/<int:course_id>/<int:team_id>', methods=['GET', 'POST'])
 @login_required
-def team(id):
-    pass
+def team(course_id, team_id):
+    if current_user.role == 's':
+        flash('Must be a member of faculty or a site admin to access this page.', category='error')
+        return redirect(url_for('views.home'))
+    
+    course = Course.query.get_or_404(course_id)
 
+    if course.teacherID != current_user.userID:
+        flash('You do not have permission to view this course!', category='error')
+        return redirect(url_for('views.faculty'))
+    
+    if request.method=='POST':
+        if 'student_selection' in request.form:
+            studentID = request.form['student_selection']
+            already_assigned = TeamAssignment.query.filter_by(userID=studentID).filter_by(teamID=team_id).first()
+            if already_assigned:
+                flash('Student already assigned to team!', category='error')
+            else:
+                ta = TeamAssignment(
+                    teamID=team_id,
+                    userID=studentID
+                )
+                db.session.add(ta)
+                db.session.commit()
+                flash('Student successfully added to team!', category='success')
+
+    team = Team.query.get_or_404(team_id)
+    student_ids=TeamAssignment.query.filter_by(teamID=team.teamID).all()
+    students=[]
+    for sid in student_ids:
+        student_id = sid.userID
+        students.append(Users.query.get(student_id))
+
+    course_students = StudentAssignment.query.filter_by(courseID=course_id).all()
+    all_students=[]
+    for s in course_students:
+        all_students.append(Users.query.get(s.studentID))
+
+    return render_template('team.html', user=current_user, course=course, team=team, students=students, all_students=all_students)
+
+@views.route('/team/<int:team_id>/remove/<int:student_id>')
+@login_required
+def team_remove(team_id, student_id):
+    pass
+    
 ################
 # ADMIN VIEWS  #
 ################
@@ -288,6 +317,8 @@ def create_course():
 @views.route('/permissions', methods=['GET', 'POST'])
 @login_required
 def permissions():
+
+    
     if current_user.role != 'a':
         flash('Must be a site admin to access this page.', category='error')
         return redirect(url_for('views.home'))
@@ -307,9 +338,12 @@ def permissions():
 
     all_faculty = Users.query.filter_by(role='f').all()
     valid_emails = Users.query.filter(Users.email.contains('@utc.edu')).all()
-    valid_emails.remove(current_user)
-    for f in all_faculty:
-        valid_emails.remove(f)
+    try:
+        valid_emails.remove(current_user)
+        for f in all_faculty:
+            valid_emails.remove(f)
+    except:
+        pass
 
     return render_template('permissions.html', user=current_user, faculty=all_faculty, valid_emails=valid_emails)
 

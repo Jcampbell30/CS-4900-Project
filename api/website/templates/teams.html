@@ -5,12 +5,6 @@
 
 <h1>Team Management | {{ course.courseName }}</h1>
 
-<div>
-  {% for team in teams %}
-    <p class="text-light">{{ team.teamName }}</p>
-  {% endfor %}
-</div>
-
 <!--      
   A form to create a new team
 -->
@@ -29,6 +23,10 @@
 
 <div class='badge bg-dark text-center;' style='width: auto; margin-right: auto;'>
 <form method="POST" style = "border:1px solid #ccc">
+  <div>
+    <header>Select a Team</header>
+  </div>
+  <br>
   <div class = "container2">
     <label for="teamID">Choose a team</label>
     <SELECT name="teamID" style="font-family:verdana">
@@ -36,13 +34,7 @@
         <OPTION value='{{team.teamID}}'>{{team.teamName}}</OPTION>
       {% endfor %}
     </SELECT><br><br>
-    <label for="studentName">Add a student</label>
-    <SELECT name = "studentID" style = "font-family:verdana">
-      {% for name in students %}
-        <OPTION value='{{name.userID}}'>{{name.userFirstName}} {{name.userLastName}}</OPTION>
-      {% endfor %}
-    </SELECT><br><br><br>
-    <button type="submit" value="Submit">Add Team Member</button>
+    <button type="submit" value="Submit">Select Team</button>
   </div>
 </form>
 </div>
