@@ -59,9 +59,7 @@ CREATE TABLE teamAssignment (
 CREATE TABLE templateAssignment (
   templateAssignmentID INT NOT NULL AUTO_INCREMENT,
   templateID INT,
-  teamID INT,
-  gradingScale INT,
-  numberQuestions INT,
+  courseID INT,
   FOREIGN KEY (templateID) REFERENCES team(teamID),
   PRIMARY KEY (templateAssignmentID)
 );

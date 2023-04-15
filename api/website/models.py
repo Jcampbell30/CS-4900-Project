@@ -57,7 +57,7 @@ class TemplateAssignment(db.Model):
     __tablename__ = 'templateAssignment'
     templateAssignmentID = db.Column(db.Integer, primary_key=True)
     templateID = db.Column(db.Integer, db.ForeignKey('template.templateID'))
-    teamID = db.Column(db.Integer, db.ForeignKey('team.teamID'))
+    courseID = db.Column(db.Integer, db.ForeignKey('team.teamID'))
 
 class StudentAssignment(db.Model):
     __tablename__ = 'studentAssignment'

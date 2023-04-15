@@ -21,7 +21,7 @@
     <ul>
         {% for student in students %}
             <li>
-                <p class='text-light'>{{student.userFirstName}} {{student.userLastName}} | {{student.email}} | <a href='#'>Remove</a></p>
+                <p class='text-light'>{{student.userFirstName}} {{student.userLastName}} | {{student.email}} | <a href='{{url_for("views.team_remove", team_id=team.teamID, student_id=student.userID)}}'>Remove</a></p>
             </li>
         {% endfor %}
     </ul>

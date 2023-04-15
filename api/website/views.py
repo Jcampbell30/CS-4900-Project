@@ -50,8 +50,11 @@ def faculty():
     my_courses =  Course.query.filter_by(teacherID=current_user.userID).all()
 
     if request.method == 'POST':
-        if 'course_selection' in request.form:
-            return redirect(url_for('views.teams', course_id=request.form['course_selection']))
+        if 'template_selection' in request.form:
+            template = Template.query.get_or_404(request.form['template_selection'])
+            course = Course.query.get_or_404(request.form['course_selection'])
+            temp_assign = TemplateAssignment(templateID=template.templateID, courseID=course.courseID)
+        
 
     return render_template('faculty.html', user=current_user,templates=my_templates,courses=my_courses)
 
@@ -210,8 +213,27 @@ def team(course_id, team_id):
 @views.route('/team/<int:team_id>/remove/<int:student_id>')
 @login_required
 def team_remove(team_id, student_id):
-    pass
+    if current_user.role == 's':
+        flash('Must be a member of faculty or a site admin to access this page.', category='error')
+        return redirect(url_for('views.home'))
     
+    team = Team.query.get_or_404(team_id)
+    course = Course.query.get_or_404(team.courseID)
+
+    if course.teacherID != current_user.userID:
+        flash('You do not have permission to modify this team!', category='error')
+        return redirect(url_for('views.faculty'))
+    
+    ta = TeamAssignment.query.filter_by(userID=student_id).filter_by(teamID=team.teamID).first()
+    if ta:
+        db.session.delete(ta)
+        db.session.commit()
+        flash('User successfully removed', category='success')
+    else:   
+        flash('User not assigned to team!', category='error')
+    return redirect(url_for('views.team', course_id=course.courseID, team_id=team.teamID))
+
+
 ################
 # ADMIN VIEWS  #
 ################
