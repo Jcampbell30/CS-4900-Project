@@ -141,6 +141,10 @@ def faculty():
         if 'template_selection' in request.form:
             template = Template.query.get_or_404(request.form['template_selection'])
             course = Course.query.get_or_404(request.form['course_selection'])
+            temp_assigned = TemplateAssignment.query.filter_by(templateID=template.templateID).filter_by(courseID=course.courseID).first()
+            if temp_assigned:
+                flash('Template already assigned to class!', category='error')
+                return render_template('faculty.html', user=current_user,templates=my_templates,courses=my_courses)  
             temp_assign = TemplateAssignment(templateID=template.templateID, courseID=course.courseID)
             db.session.add(temp_assign)
             db.session.commit()
@@ -250,15 +254,18 @@ def teams(course_id):
             flash(f'The {teamName} team was created successfully.', category='success')
         elif 'teamID' in request.form:
             return redirect(url_for('views.team', course_id=course_id, team_id=request.form['teamID']))
-    
-    print(current_user.userID)
+        elif 'templateID' in request.form:
+            return redirect(url_for('views.results', course_id=course_id, template_id=request.form['templateID']))
     assigned_ids = StudentAssignment.query.filter_by(courseID=course_id)
 
     all_students = Users.query.filter_by(role='s').all()
     
     teams=Team.query.filter_by(courseID=course.courseID).all()
-    print(teams)
-    return render_template('teams.html', user=current_user, course=course, students=all_students, teams=teams)
+    template_assignments=TemplateAssignment.query.filter_by(courseID=course_id).all()
+    templates=[]
+    for t in template_assignments:
+        templates.append(Template.query.get(t.templateID))
+    return render_template('teams.html', user=current_user, course=course, students=all_students, teams=teams, templates=templates)
 
 # Individual team page
 @views.route('/teams/<int:course_id>/<int:team_id>', methods=['GET', 'POST'])

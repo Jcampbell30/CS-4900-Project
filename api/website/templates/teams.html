@@ -3,7 +3,7 @@
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
 
 
-<h1>Team Management | {{ course.courseName }}</h1>
+<h1>Course Management | {{ course.courseName }}</h1>
 <br>
 <!--      
   A form to create a new team
@@ -39,6 +39,23 @@
   </div>
 </form>
 </div>
+<div class='badge bg-dark text-center;' style='width: auto; margin-right: auto;'>
+  <form method="POST">
+    <div style="font-size: 35px;">
+      <header>Select a Template</header>
+    </div>
+    <br>
+    <div class = "container2" style="font-size: 15px;">
+      <label for="templateID">Choose a template</label>
+      <SELECT name="templateID" style="font-family:verdana">
+        {% for template in templates %}
+          <OPTION value='{{template.templateID}}'>{{template.templateName}}</OPTION>
+        {% endfor %}
+      </SELECT><br><br>
+      <button type="submit" value="Submit">View Results</button>
+    </div>
+  </form>
+  </div>
 
 
 {% endblock %}
