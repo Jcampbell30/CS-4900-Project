@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Peer Review</h1><br>
+    <h3><strong>Course:</strong> {{ course.courseName }}</h3><br>
+    <h3><strong>Scale:</strong> 0-{{ template.gradingScale }}</h3><br><br>
+
+    {% for team in team_info %}
+    <div class="container">
+        <h3>{{team[0].teamName}}</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Team Member</th>
+                    {% for question in questions %}
+                    <th>{{ question.questionDesc }}</th>
+                    {% endfor %}
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in team[1] %}
+                <tr>
+                    <td>{{ member.userFirstName }} {{ member.userLastName }}</td>
+                    {% for question in questions%}
+                    <td>HEHE</td>
+                    {% endfor %}
+                    <td>{{ team[3][loop.index-1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+{% endblock %}

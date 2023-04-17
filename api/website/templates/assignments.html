@@ -6,43 +6,16 @@
      all members on one's team. -->
 
 
-  <link rel= 'stylesheet' type= 'text/css' href= '{{ url_for("static",filename="styles/style.css") }}'>
-  <div class='container'>
-    <h1>UTC Peer Review</h1>
-    <h2 align='center'>Student Name: </h2>
-    <h3 align='center'>Team Name: </h3>
-    <br>
-        <table align='center'>
-            <tr>
-              <th></th>
-              <th>Question</th>
-              <th>Question</th>
-            </tr>
-            <tr>
-                <!-- student name would need to be replaced with the user who is currently logged in -->
-                <td>Student Name</td>
-                <td align='center'>
-                <!-- max number would need to be whatever the prof. sets the scale variable to be -->
-                <input type='number' id='score' name='score' min='0' max='100'>
-                </td>
-                <td align='center'>
-                <input type='number' id='score' name='score' min='0' max='100'>
-                </td>
-            </tr>
-            <tr>
-                <!-- team member would need to be replaced with the members on the persons team -->
-                <td>Team Member</td>
-                <td align='center'>
-                    <input type='number' id='score' name='score' min='0' max='100'>
-                </td>
-                <td align='center'>
-                    <input type='number' id='score' name='score' min='0' max='100'>
-                </td>
-            </tr>
-          </table>
-          <br>
-          <h3 align='center'>Rating Scale: 0 - </h3>
-    <button type='submit' value='Submit'>Submit Results</button>
-  </div>
-</form> 
+<link rel= 'stylesheet' type= 'text/css' href= '{{ url_for("static",filename="styles/style.css") }}'>
+<div class='container'>
+  <h3>List of Courses</h3>
+  <form method='POST'>
+    <select name='course_select'>
+      {% for course in courses %}
+        <option value='{{course.courseID}}'>{{course.courseName}}</option>
+      {% endfor %}
+    </select>
+    <button type='submit'>Submit</button>
+  </form>
+</div>
 {% endblock %}

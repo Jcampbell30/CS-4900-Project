@@ -65,10 +65,11 @@ class StudentAssignment(db.Model):
     studentID = db.Column(db.Integer, db.ForeignKey('users.userID'))
     courseID = db.Column(db.Integer, db.ForeignKey('course.courseID'))
 
-class studentGrades(db.Model):
+class StudentGrades(db.Model):
     __tablename__ = 'studentGrades'
     gradeID = db.Column(db.Integer, primary_key=True)
     studentID = db.Column(db.Integer, db.ForeignKey('users.userID'))
     targetID = db.Column(db.Integer, db.ForeignKey('users.userID'))
     questionID = db.Column(db.Integer, db.ForeignKey('question.questionID'))
+    templateID = db.Column(db.Integer, db.ForeignKey('template.templateID'))
     grade = db.Column(db.Integer)

@@ -79,9 +79,11 @@ CREATE TABLE studentGrades(
   studentID INT,
   targetID INT,
   questionID INT,
+  templateID INT,
   grade INT,
   FOREIGN KEY (studentID) REFERENCES users(userID),
   FOREIGN KEY (targetID) REFERENCES users(userID),
   FOREIGN KEY (questionID) REFERENCES question(questionID),
+  FOREIGN KEY (templateID) REFERENCES template(templateID),
   PRIMARY KEY (gradeID)
 );

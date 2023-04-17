@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from .models import Users, Template, Course, StudentAssignment, TemplateAssignment, Question, TeamAssignment, Team
+from .models import Users, Template, Course, StudentAssignment, TemplateAssignment, Question, TeamAssignment, Team, StudentGrades
 from . import db
 from datetime import datetime
 
@@ -22,17 +22,105 @@ def home():
 @views.route('/assignments', methods=['GET', 'POST'])
 @login_required
 def assignments():
-    return render_template('assignments.html', user=current_user)
+    # Check if current user is permitted to use page.
+    if current_user.role != 's':
+        flash('Must be a student to access peer reviews!', category='error')
+        return redirect(url_for('views.home'))
+    
+    # Redirect to a peer review if they submitted a valid form.
+    if request.method=='POST':
+        if 'course_select' in request.form:
+            template_assignment = TemplateAssignment.query.filter_by(courseID=request.form['course_select']).first()
+            template = Template.query.get(template_assignment.templateID)
+            return redirect(url_for('views.peer_review', course_id=request.form['course_select'], template_id=template.templateID))
 
-@views.route('/peer-review/<int:id>', methods=['GET', 'POST'])
+    # Get a list of the current user's assigned courses.
+    course_assignments=StudentAssignment.query.filter_by(studentID=current_user.userID).all()
+    courses=[]
+    for course in course_assignments:
+        courses.append(Course.query.get(course.courseID))
+
+    return render_template('assignments.html', user=current_user, courses=courses, teams=teams)
+
+@views.route('/peer-review/<int:course_id>/<int:template_id>', methods=['GET', 'POST'])
 @login_required
-def peer_review(id):
-    if current_user.role == 's':
+def peer_review(course_id, template_id):
+    # Check if current user is permitted to use page.
+    if current_user.role != 's':
         flash('Must be a student to access peer reviews!', category='error')
         return redirect(url_for('views.home'))
 
-    template = Template.query.get_or_404(id)
-    course = Course.query.filter_by()
+    # Get template and course object or error out with a 404 page.
+    template = Template.query.get_or_404(template_id)
+    course = Course.query.get_or_404(course_id)
+
+    # Get a template assignment and ensure the template is assigned to the course.
+    template_assignment = TemplateAssignment.query.filter_by(templateID=template_id).filter_by(courseID=course_id).first()
+    if not template_assignment:
+        flash('This template is not assigned to this course!', category='error')
+        return redirect(url_for('views.assignments'))
+
+    # Get a student assignment and ensure the student is assigned to the course
+    course_student=StudentAssignment.query.filter_by(courseID=course.courseID).filter_by(studentID=current_user.userID).first()
+    if not course_student:
+        flash('You are not assigned to this course!', category='error')
+        return redirect(url_for('views.assignments'))
+    
+    # Get the current user their team, if assigned to one.
+    team_assignments=TeamAssignment.query.filter_by(userID=current_user.userID).all()
+    team = None
+    for ta in team_assignments:
+        team = Team.query.filter_by(teamID=ta.teamID).first()
+        if team.courseID == course_id:
+            break
+        team = None
+    if team == None:
+        flash('You are not assigned to a team!', category='error')
+        return redirect(url_for('views.assignments'))
+
+    # Get the current user's teammates
+    team_member_assignments=TeamAssignment.query.filter_by(teamID=team.teamID).all()
+    team_members = []
+    for member in team_member_assignments:
+        if member.userID == current_user.userID:
+            continue
+        team_members.append(Users.query.get(member.userID))
+
+    # Grabs questions for template
+    questions = Question.query.filter_by(templateID=template_id).all()
+
+    # Check if they already submitted this peer review.
+    alreadySubmitted = StudentGrades.query.filter_by(studentID=current_user.userID).filter_by(targetID=current_user.userID).filter_by(questionID=questions[0].questionID).first()
+    if alreadySubmitted:
+        flash('You have already completed this peer review!', category='error')
+        return redirect(url_for('views.assignments'))
+
+    # If form submitted, service the submission
+    if request.method=='POST':
+        grades=[]
+        for question in questions:
+            grades.append(StudentGrades(
+                studentID=current_user.userID,
+                targetID=current_user.userID,
+                questionID=question.questionID,
+                templateID=template_id,
+                grade=request.form[f'{current_user.userID}_{question.questionID}']
+            ))
+            for tm in team_members:
+                grades.append(StudentGrades(
+                    studentID=current_user.userID,
+                    targetID=tm.userID,
+                    questionID=question.questionID,
+                    templateID=template_id,
+                    grade=request.form[f'{tm.userID}_{question.questionID}']
+                ))
+        for grade in grades:
+            db.session.add(grade)
+        db.session.commit()
+        flash('Successfully submitted peer review!', category='success')
+        return redirect(url_for('views.assignments'))
+
+    return render_template('peer-review.html', user=current_user, course=course, template=template, team=team, team_members=team_members, questions=questions)
 
 
 #################
@@ -237,6 +325,52 @@ def team_remove(team_id, student_id):
     else:   
         flash('User not assigned to team!', category='error')
     return redirect(url_for('views.team', course_id=course.courseID, team_id=team.teamID))
+
+@views.route('/results/<int:course_id>/<int:template_id>')
+@login_required
+def results(course_id, template_id):
+    if current_user.role == 's':
+        flash('Must be a member of faculty or a site admin to access this page.', category='error')
+        return redirect(url_for('views.home'))
+    
+    course = Course.query.get_or_404(course_id)
+    template = Template.query.get_or_404(template_id)
+
+    if course.teacherID != current_user.userID:
+        flash('You are not the assigned faculty of this course!', category='error')
+        return redirect(url_for('views.faculty'))
+    
+    teams = Team.query.filter_by(courseID=course.courseID).all()
+    questions = Question.query.filter_by(templateID=template_id).all()
+    team_info = []
+    for team in teams:
+        team_assignments=TeamAssignment.query.filter_by(teamID=team.teamID).all()
+        team_members=[]
+        for assignment in team_assignments:
+            team_members.append(Users.query.get(assignment.userID))
+        member_ids=[]
+        
+        for member in team_members:
+            member_ids.append(member.userID)
+        student_grades = StudentGrades.query.filter_by(templateID=template_id).filter(StudentGrades.studentID.in_(member_ids)).all()
+        
+        final_grades=[]
+        for member in team_members:
+            print(member.userFirstName)
+            final = 0
+            grades = StudentGrades.query.filter_by(templateID=template_id).filter_by(targetID=member.userID).all()
+            print(grades)
+            for grade in grades:
+                print("I hate phuong")
+                final = final + grade.grade
+                print(final)
+            final = final/len(team_members)
+            final_grades.append(final)
+        print(final_grades)
+        t = [team, team_members, student_grades, final_grades]
+        team_info.append(t)
+
+    return render_template('results.html', user=current_user, template=template, course=course, questions=questions, team_info=team_info)
 
 
 ################
