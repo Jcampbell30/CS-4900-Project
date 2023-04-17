@@ -9,11 +9,11 @@
     -->
 <h1>Faculty Page</h1>
 <span style='display: inline-block;'>
-
-    <div class='badge bg-dark text-center;' style='width: auto; margin-right: auto;'>
+    <br>
+    <div class='badge bg-dark text-center;' style='width: auto; margin-right: 20px;'>
         <h3>Team Management</h3>
         <form method='POST'>
-            <label for='course_select' style="font-size: 20px;"><b>Select a Course</b></label>
+            <label for='course_select' style="font-size: 20px; color: white;"><b>Select a Course</b></label>
             <br>
             <br>
              <select name='course_selection'>
@@ -26,10 +26,10 @@
             </div>
         </form>
     </div>
-    <div class='badge bg-dark text-center;' style='width: auto; margin-right: auto;'>
+    <div class='badge bg-dark text-center;' style='width: auto; margin-right: 20px;'>
         <form action='/templates'><button style='width: 200px; margin-right: auto;' type='submit'>Create New Template</button></form>
         <form method='POST' action='/questions'>
-            <label for='templateSelection' style="font-size: 20px;"><b>Select a Template</b></label>
+            <label for='templateSelection' style="font-size: 20px; color: white;"><b>Select a Template</b></label>
             <br>
             <br>
              <select name='templateSelection'>
@@ -45,7 +45,7 @@
     <div class='badge bg-dark text-center;' style='width: auto; margin-right: auto;'>
         <h3>Template Management</h3>
         <form method='POST'>
-            <label for='template_selection' style="font-size: 20px;"><b>Select a Template</b></label>
+            <label for='template_selection' style="font-size: 20px; color: white;"><b>Select a Template</b></label>
             <br>
             <br>
              <select name='template_selection'>
@@ -53,7 +53,7 @@
                     <option value='{{ template.templateID }}'>{{ template.templateName }}</option>
                 {% endfor %}
             </select><br>
-            <label for='course_selection' style="font-size: 20px;"><b>Select a Course</b></label>
+            <label for='course_selection' style="font-size: 20px; color: white;"><b>Select a Course</b></label>
             <br>
             <br>
             <select name='course_selection'>
