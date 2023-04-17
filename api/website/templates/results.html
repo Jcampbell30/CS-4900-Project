@@ -2,6 +2,7 @@
 {% block content %}
     <h1>Peer Review</h1><br>
     <h3><strong>Course:</strong> {{ course.courseName }}</h3><br>
+    <h3><strong>Template Name:</strong> {{ template.templateName }}</h3><br><br>
     <h3><strong>Scale:</strong> 0-{{ template.gradingScale }}</h3><br><br>
 
     {% for team in team_info %}
