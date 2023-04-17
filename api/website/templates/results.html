@@ -20,11 +20,11 @@
             <tbody>
                 {% for member in team[1] %}
                 <tr>
-                    <td>{{ member.userFirstName }} {{ member.userLastName }}</td>
+                    <td>{{ member.user.userFirstName }} {{ member.user.userLastName }}</td>
                     {% for question in questions%}
-                    <td>HEHE</td>
+                        <td>{{ member.grades[question.questionID|string] }}</td>
                     {% endfor %}
-                    <td>{{ team[3][loop.index-1] }}</td>
+                    <td>{{ member.final }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

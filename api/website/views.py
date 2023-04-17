@@ -348,26 +348,18 @@ def results(course_id, template_id):
         team_members=[]
         for assignment in team_assignments:
             team_members.append(Users.query.get(assignment.userID))
-        member_ids=[]
         
+        members=[]
         for member in team_members:
-            member_ids.append(member.userID)
-        student_grades = StudentGrades.query.filter_by(templateID=template_id).filter(StudentGrades.studentID.in_(member_ids)).all()
-        
-        final_grades=[]
-        for member in team_members:
-            print(member.userFirstName)
-            final = 0
             grades = StudentGrades.query.filter_by(templateID=template_id).filter_by(targetID=member.userID).all()
-            print(grades)
-            for grade in grades:
-                print("I hate phuong")
-                final = final + grade.grade
-                print(final)
-            final = final/len(team_members)
-            final_grades.append(final)
-        print(final_grades)
-        t = [team, team_members, student_grades, final_grades]
+            members.append(
+                ResultStudent(
+                    user=member,
+                    grades=getQuestionGrades(grades=grades, questions=questions),
+                    final=getFinal(grades=grades, team_members=len(team_members))
+                )
+            )
+        t = [team, members]
         team_info.append(t)
 
     return render_template('results.html', user=current_user, template=template, course=course, questions=questions, team_info=team_info)
@@ -509,6 +501,31 @@ def permissions():
     return render_template('permissions.html', user=current_user, faculty=all_faculty, valid_emails=valid_emails)
 
 
+
+
+class ResultStudent():
+    def __init__(self, user:Users, grades:dict, final:float):
+        self.user = user
+        self.grades = grades
+        self.final = final
+    
+    
+def getFinal(grades: list, team_members:int):
+    final = 0
+    for grade in grades:
+        final = final + grade.grade
+    final = final/team_members
+    return final
+
+def getQuestionGrades(grades:list, questions:list):
+    total={}
+    for question in questions:
+        total_grade=0
+        for grade in grades:
+            if grade.questionID == question.questionID:
+                total_grade=total_grade+grade.grade
+        total.update({f'{ question.questionID }' : total_grade} )
+    return total
 ##########################
 # DELETE BEFORE DELIVERY #
 ##########################
