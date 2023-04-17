@@ -14,9 +14,21 @@
     <input type="text" placeholder="Enter Last Name" name="lastName" required>
 
     <label for="email"><b>Email</b></label>
+    <div class="hover-text">?
+      <span class="tooltip-text" id="right">Ex: aaa111@domain.edu
+        <br>Only "@mocs.utc.edu" and "@utc.edu" emails are accepted.<br>
+        Only faculty are to use the "@utc.edu" domain.
+      </span>
+    </div>
     <input type="text" placeholder="Enter Email" name="email" required>
 
     <label for="psw"><b>Password</b></label>
+
+    <div class="hover-text">?
+      <span class="tooltip-text" id="right">Passwords should contain at least one the following: <br>A number <br> An uppercase letter
+      <br>A lowercase letter <br>A symbol (? $ ! *)</span>
+    </div>
+
     <input type="password" placeholder="Enter Password" name="psw" required>
 
     <label for="psw-repeat"><b>Repeat Password</b></label>

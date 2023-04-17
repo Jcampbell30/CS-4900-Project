@@ -76,9 +76,7 @@
   
   /* Add padding to container elements */
   .container {
-    padding: 16px;
-    border: none;
-    margin: 0;
+    
   }
   
   /* Clear floats */
@@ -119,4 +117,35 @@
     .cancelbtn, .signupbtn {
       width: 100%;
     }
+  }
+
+  .tooltip-text {
+    visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    width: 250px;
+    color: white;
+    font-size: 12px;
+    background-color: #192733;
+    border-radius: 10px;
+    padding: 10px 15px 10px 15px;
+  }
+  
+  .hover-text:hover .tooltip-text {
+    visibility: visible;
+  }
+  
+  #right {
+    top: -8px;
+    left: 120%;
+  }
+  
+  .hover-text {
+    position: relative;
+    display: inline-block;
+    color: white;
+    font-weight: bold;
+    margin: 5px;
+    font-family: Arial;
+    text-align: center;
   }
