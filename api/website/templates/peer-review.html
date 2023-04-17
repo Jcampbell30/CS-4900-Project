@@ -13,14 +13,14 @@
             <div class="container">
                 <table class="table table-bordered">
                     <thead>
-                        <tr>
+                        <tr style="background-color: gainsboro;">
                             <th>Team Member</th>
                             {% for question in questions %}
                             <th>{{ question.questionDesc }}</th>
                             {% endfor %}
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody style="background-color: goldenrod;">
                         <tr>
                             <td>{{ user.userFirstName}} {{ user.userLastName }}</td>
                             {% for question in questions%}
