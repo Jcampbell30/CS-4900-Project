@@ -38,7 +38,12 @@ def assignments():
     course_assignments=StudentAssignment.query.filter_by(studentID=current_user.userID).all()
     courses=[]
     for course in course_assignments:
-        courses.append(Course.query.get(course.courseID))
+        c= Course.query.get(course.courseID)
+        ta = TemplateAssignment.query.filter_by(courseID=course.courseID).all()
+        templates=[]
+        for template in ta:
+            templates.append(Template.query.get(template.templateID))
+        courses.append([c, templates])
 
     return render_template('assignments.html', user=current_user, courses=courses, teams=teams)
 
@@ -90,7 +95,11 @@ def peer_review(course_id, template_id):
     questions = Question.query.filter_by(templateID=template_id).all()
 
     # Check if they already submitted this peer review.
-    alreadySubmitted = StudentGrades.query.filter_by(studentID=current_user.userID).filter_by(targetID=current_user.userID).filter_by(questionID=questions[0].questionID).first()
+    try:
+        alreadySubmitted = StudentGrades.query.filter_by(studentID=current_user.userID).filter_by(targetID=current_user.userID).filter_by(questionID=questions[0].questionID).first()
+    except:
+        flash('Peer review not set-up by professor!', category='error')
+        return redirect(url_for('views.assignments'))
     if alreadySubmitted:
         flash('You have already completed this peer review!', category='error')
         return redirect(url_for('views.assignments'))

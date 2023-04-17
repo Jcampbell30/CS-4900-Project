@@ -8,14 +8,14 @@
 
 <link rel= 'stylesheet' type= 'text/css' href= '{{ url_for("static",filename="styles/style.css") }}'>
 <div class='container'>
-  <h3>List of Courses</h3>
-  <form method='POST'>
-    <select name='course_select'>
-      {% for course in courses %}
-        <option value='{{course.courseID}}'>{{course.courseName}}</option>
+  <h1>List of Course Assignments</h1>
+  {% for course in courses %}
+    <div class='badge bg-dark'>
+      <h3>{{course[0].courseName}}</h3>
+      {% for template in course[1] %}
+        <p>{{ template.templateName }} | <a href='{{url_for("views.peer_review", course_id=course[0].courseID, template_id=template.templateID)}}'>Go!</a></p>
       {% endfor %}
-    </select>
-    <button type='submit'>Submit</button>
-  </form>
+    </div>
+  {% endfor %}
 </div>
 {% endblock %}
