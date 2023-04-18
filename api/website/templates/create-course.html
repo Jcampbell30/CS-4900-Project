@@ -10,7 +10,7 @@
       <input type="text" placeholder="Enter Course Name" name="courseName" required>
   
       <label for="assignedFaculty"><b>Assigned Faculty</b></label><br>
-      <select name="assignedFaculty">
+      <select name="assignedFaculty" required>
         {% for f in faculty %}
           <option value='{{ f.userID }}'>{{ f.userFirstName }} {{f.userLastName}}</option>
         {% endfor %}

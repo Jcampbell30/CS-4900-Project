@@ -16,7 +16,7 @@
             <label for='course_select' style="font-size: 20px; color: white;"><b>Select a Course</b></label>
             <br>
             <br>
-             <select name='course_selection'>
+             <select name='course_selection' required>
                 {% for course in courses %}
                     <option value='{{ course.courseID }}'>{{ course.courseName }}</option>
                 {% endfor %}
@@ -32,7 +32,7 @@
             <label for='templateSelection' style="font-size: 20px; color: white;"><b>Select a Template</b></label>
             <br>
             <br>
-             <select name='templateSelection'>
+             <select name='templateSelection' required>
                 {% for template in templates %}
                     <option value='{{ template.templateID }}'>{{ template.templateName }}</option>
                 {% endfor %}
@@ -48,7 +48,7 @@
             <label for='template_selection' style="font-size: 20px; color: white;"><b>Select a Template</b></label>
             <br>
             <br>
-             <select name='template_selection'>
+             <select name='template_selection' required>
                 {% for template in templates %}
                     <option value='{{ template.templateID }}'>{{ template.templateName }}</option>
                 {% endfor %}
@@ -56,7 +56,7 @@
             <label for='course_selection' style="font-size: 20px; color: white;"><b>Select a Course</b></label>
             <br>
             <br>
-            <select name='course_selection'>
+            <select name='course_selection' required>
                 {% for course in courses %}
                     <option value='{{ course.courseID }}'>{{ course.courseName }}</option>
                 {% endfor %}

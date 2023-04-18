@@ -5,7 +5,7 @@
     <div class='badge bg-dark text-center'>
         <form method='POST'>
             <label for='email_selection'>Select email to promote</label><br><br>
-            <select name='email_selection'>
+            <select name='email_selection' required>
                 {% for email in valid_emails %}
                     <option value='{{ email.userID }}'>{{ email.email }}</option>
                 {% endfor %}
@@ -16,7 +16,7 @@
     <div class='badge bg-dark text-center'>
         <form method='POST'>
             <label for='demote'>Select email to demote</label><br><br>
-            <select name='demote'>
+            <select name='demote' required>
                 {% for f in faculty %}
                     <option value='{{ f.userID }}'>{{ f.email }}</option>
                 {% endfor %}

@@ -30,7 +30,7 @@
   <br>
   <div class = "container2" style="font-size: 15px;">
     <label for="teamID">Choose a team</label>
-    <SELECT name="teamID" style="font-family:verdana">
+    <SELECT name="teamID" style="font-family:verdana" required>
       {% for team in teams %}
         <OPTION value='{{team.teamID}}'>{{team.teamName}}</OPTION>
       {% endfor %}
@@ -47,7 +47,7 @@
     <br>
     <div class = "container2" style="font-size: 15px;">
       <label for="templateID">Choose a template</label>
-      <SELECT name="templateID" style="font-family:verdana">
+      <SELECT name="templateID" style="font-family:verdana" required>
         {% for template in templates %}
           <OPTION value='{{template.templateID}}'>{{template.templateName}}</OPTION>
         {% endfor %}
