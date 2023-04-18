@@ -86,18 +86,27 @@ def peer_review(course_id, template_id):
     # Get the current user's teammates
     team_member_assignments=TeamAssignment.query.filter_by(teamID=team.teamID).all()
     team_members = []
+    team_members_id = []
     for member in team_member_assignments:
         if member.userID == current_user.userID:
             continue
         team_members.append(Users.query.get(member.userID))
+        team_members_id.append(member.userID)
 
     # Grabs questions for template
     questions = Question.query.filter_by(templateID=template_id).all()
 
     # Check if they already submitted this peer review.
     try:
-        alreadySubmitted = StudentGrades.query.filter_by(studentID=current_user.userID).filter_by(targetID=current_user.userID).filter_by(questionID=questions[0].questionID).first()
-    except:
+        alreadySubmitted = StudentGrades.query.filter_by(studentID=current_user.userID).filter_by(targetID=current_user.userID).filter_by(questionID=questions[0].questionID).all()
+        for entry in alreadySubmitted:
+            if entry.targetID in team_members_id:
+                team_members_id.remove(entry.targetID)
+        if team_members_id != None:
+            alreadySubmitted = None
+            flash('You are resubmitting your peer-review!', category='warning')
+    except Exception as e:
+        print(e)
         flash('Peer review not set-up by professor!', category='error')
         return redirect(url_for('views.assignments'))
     if alreadySubmitted:
@@ -106,6 +115,15 @@ def peer_review(course_id, template_id):
 
     # If form submitted, service the submission
     if request.method=='POST':
+        template_exp = datetime.strptime(template.templateDate, '%Y/%m/%d %H:%M:%S')
+        if template_exp < datetime.now():
+            flash('Template is passed due date and cannot be turned in.', category='error')
+            return redirect(url_for('views.assignments'))
+
+        current_grades = StudentGrades.query.filter_by(studentID=current_user.userID).all()
+        for grade in current_grades:
+            db.session.delete(grade)
+        db.session.commit()
         grades=[]
         for question in questions:
             grades.append(StudentGrades(
@@ -328,11 +346,23 @@ def team_remove(team_id, student_id):
     
     team = Team.query.get_or_404(team_id)
     course = Course.query.get_or_404(team.courseID)
+    templates = TemplateAssignment.query.filter_by(courseID=course.courseID).all()
+    template_ids = []
+    for template in templates:
+        template_ids.append(template.templateID)
 
     if course.teacherID != current_user.userID:
         flash('You do not have permission to modify this team!', category='error')
         return redirect(url_for('views.faculty'))
     
+    student_grades=StudentGrades.query.filter_by(studentID=student_id).filter(StudentGrades.templateID.in_(template_ids)).all()
+    for grade in StudentGrades.query.filter_by(targetID=student_id).filter(StudentGrades.templateID.in_(template_ids)).all():
+        student_grades.append(grade)
+    print(student_grades)
+    for deletion in student_grades:
+        db.session.delete(deletion)
+        db.session.commit()
+
     ta = TeamAssignment.query.filter_by(userID=student_id).filter_by(teamID=team.teamID).first()
     if ta:
         db.session.delete(ta)
@@ -516,16 +546,12 @@ def permissions():
 
     return render_template('permissions.html', user=current_user, faculty=all_faculty, valid_emails=valid_emails)
 
-
-
-
 class ResultStudent():
     def __init__(self, user:Users, grades:dict, final:float):
         self.user = user
         self.grades = grades
         self.final = final
-    
-    
+
 def getFinal(grades: list, team_members:int):
     final = 0
     for grade in grades:
@@ -542,6 +568,7 @@ def getQuestionGrades(grades:list, questions:list):
                 total_grade=total_grade+grade.grade
         total.update({f'{ question.questionID }' : total_grade} )
     return total
+
 ##########################
 # DELETE BEFORE DELIVERY #
 ##########################

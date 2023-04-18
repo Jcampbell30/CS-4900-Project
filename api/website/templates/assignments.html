@@ -13,7 +13,7 @@
     <div class='badge bg-dark'>
       <h3>{{course[0].courseName}}</h3>
       {% for template in course[1] %}
-        <p>{{ template.templateName }} | <a href='{{url_for("views.peer_review", course_id=course[0].courseID, template_id=template.templateID)}}'>Go!</a></p>
+        <p>{{ template.templateName }} | {{ template.templateDate }} | <a href='{{url_for("views.peer_review", course_id=course[0].courseID, template_id=template.templateID)}}'>Go!</a></p>
       {% endfor %}
     </div>
   {% endfor %}
