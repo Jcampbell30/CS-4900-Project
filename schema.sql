@@ -59,10 +59,9 @@ CREATE TABLE teamAssignment (
 CREATE TABLE templateAssignment (
   templateAssignmentID INT NOT NULL AUTO_INCREMENT,
   templateID INT,
-  teamID INT,
-  gradingScale INT,
-  numberQuestions INT,
-  FOREIGN KEY (templateID) REFERENCES team(teamID),
+  courseID INT,
+  FOREIGN KEY (templateID) REFERENCES template(templateID),
+  FOREIGN KEY (courseID) REFERENCES course(courseID),
   PRIMARY KEY (templateAssignmentID)
 );
 
@@ -80,9 +79,11 @@ CREATE TABLE studentGrades(
   studentID INT,
   targetID INT,
   questionID INT,
+  templateID INT,
   grade INT,
   FOREIGN KEY (studentID) REFERENCES users(userID),
   FOREIGN KEY (targetID) REFERENCES users(userID),
   FOREIGN KEY (questionID) REFERENCES question(questionID),
+  FOREIGN KEY (templateID) REFERENCES template(templateID),
   PRIMARY KEY (gradeID)
 );

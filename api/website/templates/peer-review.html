@@ -1,4 +1,46 @@
 {% extends 'base.html' %}
-{% block 'content' %}
+{% block content %}
+    <h1>Peer Review</h1><br>
+    <h3><strong>Student:</strong> {{ user.userFirstName }} {{ user.userLastName }}</h3><br>
+    <h3><strong>Team:</strong> {{ team.teamName }}</h3><br>
+    <h3><strong>Course:</strong> {{ course.courseName }}</h3><br>
+    <h3><strong>Scale:</strong> 0-{{ template.gradingScale }}</h3><br><br>
+
+    <div>
+
+        <form method='POST'>
+            <input type="hidden" name="template_id" value="{{ template_id }}">
+            <div class="container">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr style="background-color: gainsboro;">
+                            <th>Team Member</th>
+                            {% for question in questions %}
+                            <th>{{ question.questionDesc }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: goldenrod;">
+                        <tr>
+                            <td>{{ user.userFirstName}} {{ user.userLastName }}</td>
+                            {% for question in questions%}
+                            <td><input type='number' id= '{{ user.userID }}_{{ question.questionID }}' name='{{ user.userID }}_{{ question.questionID }}' min='0' max='{{ template.gradingScale }}' size='3' required></td>
+                            {% endfor %}
+                        </tr>
+                        {% for member in team_members%}
+                        <tr>
+                            <td>{{ member.userFirstName }} {{ member.userLastName }}</td>
+                            {% for question in questions%}
+                            <td><input type='number' id= '{{ member.userID }}_{{ question.questionID }}' name='{{ member.userID }}_{{ question.questionID }}' min='0' max='{{ template.gradingScale }}' size='3' required></td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <button type='submit'>Submit</button>
+        </form>
+
+    </div>
 
 {% endblock %}

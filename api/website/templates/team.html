@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+
+<h1>Team Management | {{ course.courseName }} | {{ team.teamName }}</h1>
+
+<div class='badge bg-dark text-center'>
+    <form method='POST' action="{{ url_for('views.team', course_id=course.courseID, team_id=team.teamID)}}">
+        <label for="student_id" style="font-size: 25px; color: white;"><b>Choose Student to Assign</b></label><br><br>
+        <select name="student_selection">
+            {% for student in all_students %}
+                <option value="{{ student.userID }}">{{student.userFirstName}} {{student.userLastName}}</option>
+            {% endfor %}
+        </select><br>
+        <button type="submit">Assign Student</button>
+    </form>
+</div>
+<br>
+<br>
+<div class='badge bg-dark text-center'>
+    <h3>List of Assigned Students</h3>
+    <ul>
+        {% for student in students %}
+            <li>
+                <p class='text-light'>{{student.userFirstName}} {{student.userLastName}} | {{student.email}} | <a href='{{url_for("views.team_remove", team_id=team.teamID, student_id=student.userID)}}'>Remove</a></p>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

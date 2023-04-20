@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from .models import Users, Template, Course, StudentAssignment, TemplateAssignment, Question, TeamAssignment, Team
+from .models import Users, Template, Course, StudentAssignment, TemplateAssignment, Question, TeamAssignment, Team, StudentGrades
 from . import db
 from datetime import datetime
 
@@ -22,17 +22,132 @@ def home():
 @views.route('/assignments', methods=['GET', 'POST'])
 @login_required
 def assignments():
-    return render_template('assignments.html', user=current_user)
+    # Check if current user is permitted to use page.
+    if current_user.role != 's':
+        flash('Must be a student to access peer reviews!', category='error')
+        return redirect(url_for('views.home'))
+    
+    # Redirect to a peer review if they submitted a valid form.
+    if request.method=='POST':
+        if 'course_select' in request.form:
+            template_assignment = TemplateAssignment.query.filter_by(courseID=request.form['course_select']).first()
+            template = Template.query.get(template_assignment.templateID)
+            return redirect(url_for('views.peer_review', course_id=request.form['course_select'], template_id=template.templateID))
 
-@views.route('/peer-review/<int:id>', methods=['GET', 'POST'])
+    # Get a list of the current user's assigned courses.
+    course_assignments=StudentAssignment.query.filter_by(studentID=current_user.userID).all()
+    courses=[]
+    for course in course_assignments:
+        c= Course.query.get(course.courseID)
+        ta = TemplateAssignment.query.filter_by(courseID=course.courseID).all()
+        templates=[]
+        for template in ta:
+            templates.append(Template.query.get(template.templateID))
+        courses.append([c, templates])
+
+    return render_template('assignments.html', user=current_user, courses=courses, teams=teams)
+
+@views.route('/peer-review/<int:course_id>/<int:template_id>', methods=['GET', 'POST'])
 @login_required
-def peer_review(id):
-    if current_user.role == 's':
+def peer_review(course_id, template_id):
+    # Check if current user is permitted to use page.
+    if current_user.role != 's':
         flash('Must be a student to access peer reviews!', category='error')
         return redirect(url_for('views.home'))
 
-    template = Template.query.get_or_404(id)
-    course = Course.query.filter_by()
+    # Get template and course object or error out with a 404 page.
+    template = Template.query.get_or_404(template_id)
+    course = Course.query.get_or_404(course_id)
+
+    # Get a template assignment and ensure the template is assigned to the course.
+    template_assignment = TemplateAssignment.query.filter_by(templateID=template_id).filter_by(courseID=course_id).first()
+    if not template_assignment:
+        flash('This template is not assigned to this course!', category='error')
+        return redirect(url_for('views.assignments'))
+
+    # Get a student assignment and ensure the student is assigned to the course
+    course_student=StudentAssignment.query.filter_by(courseID=course.courseID).filter_by(studentID=current_user.userID).first()
+    if not course_student:
+        flash('You are not assigned to this course!', category='error')
+        return redirect(url_for('views.assignments'))
+    
+    # Get the current user their team, if assigned to one.
+    team_assignments=TeamAssignment.query.filter_by(userID=current_user.userID).all()
+    team = None
+    for ta in team_assignments:
+        team = Team.query.filter_by(teamID=ta.teamID).first()
+        if team.courseID == course_id:
+            break
+        team = None
+    if team == None:
+        flash('You are not assigned to a team!', category='error')
+        return redirect(url_for('views.assignments'))
+
+    # Get the current user's teammates
+    team_member_assignments=TeamAssignment.query.filter_by(teamID=team.teamID).all()
+    team_members = []
+    team_members_id = []
+    for member in team_member_assignments:
+        if member.userID == current_user.userID:
+            continue
+        team_members.append(Users.query.get(member.userID))
+        team_members_id.append(member.userID)
+
+    # Grabs questions for template
+    questions = Question.query.filter_by(templateID=template_id).all()
+
+    # Check if they already submitted this peer review.
+    try:
+        alreadySubmitted = StudentGrades.query.filter_by(studentID=current_user.userID).filter_by(targetID=current_user.userID).filter_by(questionID=questions[0].questionID).all()
+        for entry in alreadySubmitted:
+            if entry.targetID in team_members_id:
+                team_members_id.remove(entry.targetID)
+        if team_members_id != None:
+            alreadySubmitted = None
+            flash('You are resubmitting your peer-review!', category='warning')
+    except Exception as e:
+        print(e)
+        flash('Peer review not set-up by professor!', category='error')
+        return redirect(url_for('views.assignments'))
+    if alreadySubmitted:
+        flash('You have already completed this peer review!', category='error')
+        return redirect(url_for('views.assignments'))
+
+    # If form submitted, service the submission
+    if request.method=='POST':
+        template_exp = datetime.strptime(template.templateDate, '%Y/%m/%d %H:%M:%S')
+        if template_exp < datetime.now():
+            flash('Template is passed due date and cannot be turned in.', category='error')
+            return redirect(url_for('views.assignments'))
+
+        current_grades = StudentGrades.query.filter_by(studentID=current_user.userID).all()
+        for grade in current_grades:
+            db.session.delete(grade)
+        db.session.commit()
+        grades=[]
+        for question in questions:
+            grades.append(StudentGrades(
+                studentID=current_user.userID,
+                targetID=current_user.userID,
+                questionID=question.questionID,
+                templateID=template_id,
+                grade=request.form[f'{current_user.userID}_{question.questionID}']
+            ))
+            for tm in team_members:
+                grades.append(StudentGrades(
+                    studentID=current_user.userID,
+                    targetID=tm.userID,
+                    questionID=question.questionID,
+                    templateID=template_id,
+                    grade=request.form[f'{tm.userID}_{question.questionID}']
+                ))
+        for grade in grades:
+            db.session.add(grade)
+        db.session.commit()
+        flash('Successfully submitted peer review!', category='success')
+        return redirect(url_for('views.assignments'))
+
+    return render_template('peer-review.html', user=current_user, course=course, template=template, team=team, team_members=team_members, questions=questions)
 
 
 #################
@@ -47,8 +162,25 @@ def faculty():
         return redirect(url_for('views.home'))
 
     my_templates = Template.query.filter_by(teacherID=current_user.userID).all()
-    
-    return render_template('faculty.html', user=current_user,templates=my_templates)
+    my_courses =  Course.query.filter_by(teacherID=current_user.userID).all()
+
+    if request.method == 'POST':
+        if 'template_selection' in request.form:
+            template = Template.query.get_or_404(request.form['template_selection'])
+            course = Course.query.get_or_404(request.form['course_selection'])
+            temp_assigned = TemplateAssignment.query.filter_by(templateID=template.templateID).filter_by(courseID=course.courseID).first()
+            if temp_assigned:
+                flash('Template already assigned to class!', category='error')
+                return render_template('faculty.html', user=current_user,templates=my_templates,courses=my_courses)  
+            temp_assign = TemplateAssignment(templateID=template.templateID, courseID=course.courseID)
+            db.session.add(temp_assign)
+            db.session.commit()
+            flash('Template assigned to course!', category='success')
+        else:
+            return redirect(url_for('views.teams', course_id=request.form['course_selection']))
+        
+
+    return render_template('faculty.html', user=current_user,templates=my_templates,courses=my_courses)
 
 @views.route('/templates', methods=['GET', 'POST'])
 @login_required
@@ -125,7 +257,7 @@ def questions():
         
     return redirect(url_for('views.faculty'))
 
-
+# Team Management Page
 @views.route('/teams/<int:course_id>', methods=['GET', 'POST'])
 @login_required
 def teams(course_id):
@@ -141,30 +273,143 @@ def teams(course_id):
     
 
     if request.method == 'POST':
-        teamName = request.form['createTeam']
-        team = Team(teamName=teamName, courseID=course.courseID)
-        db.session.add(team)
-        db.session.commit()
-        flash(f'The {teamName} team was created successfully.', category='success')
+        if 'createTeam' in request.form:
+            teamName = request.form['createTeam']
+            team = Team(teamName=teamName, courseID=course.courseID)
+            db.session.add(team)
+            db.session.commit()
+            flash(f'The {teamName} team was created successfully.', category='success')
+        elif 'teamID' in request.form:
+            return redirect(url_for('views.team', course_id=course_id, team_id=request.form['teamID']))
+        elif 'templateID' in request.form:
+            return redirect(url_for('views.results', course_id=course_id, template_id=request.form['templateID']))
+    assigned_ids = StudentAssignment.query.filter_by(courseID=course_id)
+
+    all_students = Users.query.filter_by(role='s').all()
+    
+    teams=Team.query.filter_by(courseID=course.courseID).all()
+    template_assignments=TemplateAssignment.query.filter_by(courseID=course_id).all()
+    templates=[]
+    for t in template_assignments:
+        templates.append(Template.query.get(t.templateID))
+    return render_template('teams.html', user=current_user, course=course, students=all_students, teams=teams, templates=templates)
+
+# Individual team page
+@views.route('/teams/<int:course_id>/<int:team_id>', methods=['GET', 'POST'])
+@login_required
+def team(course_id, team_id):
+    if current_user.role == 's':
+        flash('Must be a member of faculty or a site admin to access this page.', category='error')
+        return redirect(url_for('views.home'))
+    
+    course = Course.query.get_or_404(course_id)
+
+    if course.teacherID != current_user.userID:
+        flash('You do not have permission to view this course!', category='error')
         return redirect(url_for('views.faculty'))
     
-    if request.method == 'GET':
-        team_id = request.args.get('team')
-        print(f"team_id = {team_id}")
-        team = TeamAssignment(teamID=team_id, userID=current_user.userID)
+    if request.method=='POST':
+        if 'student_selection' in request.form:
+            studentID = request.form['student_selection']
+            already_assigned = TeamAssignment.query.filter_by(userID=studentID).filter_by(teamID=team_id).first()
+            if already_assigned:
+                flash('Student already assigned to team!', category='error')
+            else:
+                ta = TeamAssignment(
+                    teamID=team_id,
+                    userID=studentID
+                )
+                db.session.add(ta)
+                db.session.commit()
+                flash('Student successfully added to team!', category='success')
+
+    team = Team.query.get_or_404(team_id)
+    student_ids=TeamAssignment.query.filter_by(teamID=team.teamID).all()
+    students=[]
+    for sid in student_ids:
+        student_id = sid.userID
+        students.append(Users.query.get(student_id))
+
+    course_students = StudentAssignment.query.filter_by(courseID=course_id).all()
+    all_students=[]
+    for s in course_students:
+        all_students.append(Users.query.get(s.studentID))
+
+    return render_template('team.html', user=current_user, course=course, team=team, students=students, all_students=all_students)
+
+@views.route('/team/<int:team_id>/remove/<int:student_id>')
+@login_required
+def team_remove(team_id, student_id):
+    if current_user.role == 's':
+        flash('Must be a member of faculty or a site admin to access this page.', category='error')
+        return redirect(url_for('views.home'))
     
-    print(current_user.userID)
-    courses = Course.query.filter_by(teacherID=current_user.userID).all()
-    print(courses)
-    students = Users.query.filter_by(role='s').all()
-    course_ids=[]
-    for course in courses:
-        print(course.courseID)
-        course_ids.append(course.courseID)
+    team = Team.query.get_or_404(team_id)
+    course = Course.query.get_or_404(team.courseID)
+    templates = TemplateAssignment.query.filter_by(courseID=course.courseID).all()
+    template_ids = []
+    for template in templates:
+        template_ids.append(template.templateID)
+
+    if course.teacherID != current_user.userID:
+        flash('You do not have permission to modify this team!', category='error')
+        return redirect(url_for('views.faculty'))
     
-    teams=Team.query.filter(Team.courseID.in_(course_ids)).all()
-    print(teams)
-    return render_template('teams.html', user=current_user, courses=courses, students=students, teams=teams)
+    student_grades=StudentGrades.query.filter_by(studentID=student_id).filter(StudentGrades.templateID.in_(template_ids)).all()
+    for grade in StudentGrades.query.filter_by(targetID=student_id).filter(StudentGrades.templateID.in_(template_ids)).all():
+        student_grades.append(grade)
+    print(student_grades)
+    for deletion in student_grades:
+        db.session.delete(deletion)
+        db.session.commit()
+
+    ta = TeamAssignment.query.filter_by(userID=student_id).filter_by(teamID=team.teamID).first()
+    if ta:
+        db.session.delete(ta)
+        db.session.commit()
+        flash('User successfully removed', category='success')
+    else:   
+        flash('User not assigned to team!', category='error')
+    return redirect(url_for('views.team', course_id=course.courseID, team_id=team.teamID))
+
+@views.route('/results/<int:course_id>/<int:template_id>')
+@login_required
+def results(course_id, template_id):
+    if current_user.role == 's':
+        flash('Must be a member of faculty or a site admin to access this page.', category='error')
+        return redirect(url_for('views.home'))
+    
+    course = Course.query.get_or_404(course_id)
+    template = Template.query.get_or_404(template_id)
+
+    if course.teacherID != current_user.userID:
+        flash('You are not the assigned faculty of this course!', category='error')
+        return redirect(url_for('views.faculty'))
+    
+    teams = Team.query.filter_by(courseID=course.courseID).all()
+    questions = Question.query.filter_by(templateID=template_id).all()
+    team_info = []
+    for team in teams:
+        team_assignments=TeamAssignment.query.filter_by(teamID=team.teamID).all()
+        team_members=[]
+        for assignment in team_assignments:
+            team_members.append(Users.query.get(assignment.userID))
+        
+        members=[]
+        for member in team_members:
+            grades = StudentGrades.query.filter_by(templateID=template_id).filter_by(targetID=member.userID).all()
+            members.append(
+                ResultStudent(
+                    user=member,
+                    grades=getQuestionGrades(grades=grades, questions=questions),
+                    final=getFinal(grades=grades, team_members=len(team_members))
+                )
+            )
+        t = [team, members]
+        team_info.append(t)
+
+    return render_template('results.html', user=current_user, template=template, course=course, questions=questions, team_info=team_info)
+
 
 ################
 # ADMIN VIEWS  #
@@ -263,13 +508,16 @@ def create_course():
             db.session.commit()
             flash('Course created successfully!', category='success')
     
-    all_faculty = Users.query.filter_by(role='f').all()
+
+    all_faculty = Users.query.filter(Users.role.in_(['f', 'a'])).all()
 
     return render_template('create-course.html', user=current_user, faculty=all_faculty)
 
 @views.route('/permissions', methods=['GET', 'POST'])
 @login_required
 def permissions():
+
+    
     if current_user.role != 'a':
         flash('Must be a site admin to access this page.', category='error')
         return redirect(url_for('views.home'))
@@ -289,12 +537,37 @@ def permissions():
 
     all_faculty = Users.query.filter_by(role='f').all()
     valid_emails = Users.query.filter(Users.email.contains('@utc.edu')).all()
-    valid_emails.remove(current_user)
-    for f in all_faculty:
-        valid_emails.remove(f)
+    try:
+        valid_emails.remove(current_user)
+        for f in all_faculty:
+            valid_emails.remove(f)
+    except:
+        pass
 
     return render_template('permissions.html', user=current_user, faculty=all_faculty, valid_emails=valid_emails)
 
+class ResultStudent():
+    def __init__(self, user:Users, grades:dict, final:float):
+        self.user = user
+        self.grades = grades
+        self.final = final
+
+def getFinal(grades: list, team_members:int):
+    final = 0
+    for grade in grades:
+        final = final + grade.grade
+    final = final/team_members
+    return final
+
+def getQuestionGrades(grades:list, questions:list):
+    total={}
+    for question in questions:
+        total_grade=0
+        for grade in grades:
+            if grade.questionID == question.questionID:
+                total_grade=total_grade+grade.grade
+        total.update({f'{ question.questionID }' : total_grade} )
+    return total
 
 ##########################
 # DELETE BEFORE DELIVERY #

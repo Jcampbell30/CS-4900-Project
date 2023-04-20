@@ -4,8 +4,8 @@
 <div class="container text-center">
     <div class='badge bg-dark text-center'>
         <form method='POST'>
-            <label for='email_selection'>Select email to promote</label><br><br>
-            <select name='email_selection'>
+            <label for='email_selection' style="font-size: 20px; color: white;">Select email to promote</label><br><br>
+            <select name='email_selection' required>
                 {% for email in valid_emails %}
                     <option value='{{ email.userID }}'>{{ email.email }}</option>
                 {% endfor %}
@@ -15,8 +15,8 @@
     </div><br><br>
     <div class='badge bg-dark text-center'>
         <form method='POST'>
-            <label for='demote'>Select email to demote</label><br><br>
-            <select name='demote'>
+            <label for='demote' style="font-size: 20px; color: white;">Select email to demote</label><br><br>
+            <select name='demote' required>
                 {% for f in faculty %}
                     <option value='{{ f.userID }}'>{{ f.email }}</option>
                 {% endfor %}

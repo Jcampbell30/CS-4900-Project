@@ -1,66 +1,61 @@
 {% extends 'base.html' %}
 {% block content %}
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
-<Style>
-  p {
-    color: black;
-    font-weight: bold;
-    background-color: gold;
-  }
-  select{
-    width: 50%;
-  }
-  label{
-    display: inline-block;
-  }
-  header{
-   font-size: xx-large;
-   color:gold;
-    font-weight: bold; 
-  }
-
-</Style>
 
 
-
-
+<h1>Course Management | {{ course.courseName }}</h1>
+<br>
 <!--      
   A form to create a new team
 -->
-<form method="POST" style="border:1px solid #ccc" action = "/teams">
-  <div>
+<div class='badge bg-dark text-center;' style='width: auto; margin-right: auto;'>
+<form method="POST">
+  <div style="font-size: 35px;">
     <header>Create Team</header>
-    <label for="course">Choose a course</label><br><br>
-    <SELECT name="courseID" style="font-family:verdana">
-    {% for course in courses %}
-      <OPTION value={{course.courseID}}>{{course.courseName}}</OPTION>
-    {% endfor %}
   </div>
-  <br><br>
-  <div class="container">
-
-    <input type="text" placeholder="Enter Team Name" name="createTeam" required>
-    <button type="submit" value="Submit">Create Team</button>
+  <br>
+  <div class="container" style="width: 400px;" >
+    <input type="text" placeholder="Enter Team Name" name="createTeam" required/>
+    <button type="submit" value="Submit" style="font-size: 15px;">Create Team</button>
   </div>
 </form> 
-
-<form method = "GET" style = "border:1px solid #ccc" action = "/teams">
-<div class = "container2">
-<label for="teamName">Choose a team</label>
-<SELECT name="teamID" style="font-family:verdana">
-{% for team in teams %}
-	<OPTION value={{team.teamID}}>{{team.teamName}}</OPTION>
-{% endfor %}
-</SELECT><br><br><br>
-<label for="studentName">Add a student</label>
-<SELECT name = "studentID" style = "font-family:verdana">
-{% for name in students %}
-	<OPTION value={{name.userID}}>{{name.userFirstName}} {{name.userLastName}}</OPTION>
-{% endfor %}
-</SELECT><br><br><br>
-<button type="submit" value="add_member">Add Team Member</button>
 </div>
+<br>
+<br>
+<div class='badge bg-dark text-center;' style='width: auto; margin-right: auto;'>
+<form method="POST">
+  <div style="font-size: 35px;">
+    <header>Select a Team</header>
+  </div>
+  <br>
+  <div class = "container2" style="font-size: 15px;">
+    <label for="teamID">Choose a team</label>
+    <SELECT name="teamID" style="font-family:verdana" required>
+      {% for team in teams %}
+        <OPTION value='{{team.teamID}}'>{{team.teamName}}</OPTION>
+      {% endfor %}
+    </SELECT><br><br>
+    <button type="submit" value="Submit">Select Team</button>
+  </div>
 </form>
+</div>
+<div class='badge bg-dark text-center;' style='width: auto; margin-right: auto;'>
+  <form method="POST">
+    <div style="font-size: 35px;">
+      <header>Select a Template</header>
+    </div>
+    <br>
+    <div class = "container2" style="font-size: 15px;">
+      <label for="templateID">Choose a template</label>
+      <SELECT name="templateID" style="font-family:verdana" required>
+        {% for template in templates %}
+          <OPTION value='{{template.templateID}}'>{{template.templateName}}</OPTION>
+        {% endfor %}
+      </SELECT><br><br>
+      <button type="submit" value="Submit">View Results</button>
+    </div>
+  </form>
+  </div>
 
 
 {% endblock %}
